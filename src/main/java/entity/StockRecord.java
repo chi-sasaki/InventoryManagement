@@ -1,0 +1,13 @@
+package entity;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+public class StockRecord {
+    private Integer stockQuantity;
+    private LocalDateTime lastOrderedAt;
+}
