@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class StockRecord {
+    private String modelNumber;
     private Integer stockQuantity;
     private LocalDateTime lastOrderedAt;
 }

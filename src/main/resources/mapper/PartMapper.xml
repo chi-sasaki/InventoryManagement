@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.inventorymanagement.repository.PartMapper">
+
+    <!-- 部品の一覧検索 -->
+    <select id="findAll" resultType="com.example.inventorymanagement.entity.Part">
+        SELECT
+        id, part_name, process_id, model_number, stock_quantity, last_ordered_at
+        FROM
+        part
+        ORDER BY
+        id
+    </select>
+
+    <!-- 部品の種類別検索 -->
+    <select id="findByPartName" resultType="com.example.inventorymanagement.entity.Part">
+        SELECT
+        id, part_name, process_id, model_number, stock_quantity, last_ordered_at
+        FROM
+        part
+        WHERE part_name LIKE CONCAT('%', #{partName}, '%')
+        ORDER BY part_name
+    </select>
+    
+</mapper>
