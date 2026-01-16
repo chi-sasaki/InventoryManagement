@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Material extends StockRecord {
-    private Long materialId;
+    private Long id;
     private String materialName;
     private Long processId;
 }

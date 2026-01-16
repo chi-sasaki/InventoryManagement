@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ManufacturingProcess {
-    private Long processId;
+    private Long id;
     private String processName;
 
 }
