@@ -1,9 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.inventorymanagement.repository.PartMapper">
 
+    <!-- １件の部品idを取得する-->
+    <select id="findById"
+            resultType="entity.Part">
+        SELECT
+        id, part_name, process_id, model_number, stock_quantity, last_ordered_at
+        FROM part
+        WHERE id = #{id}
+    </select>
+
     <!-- 部品の一覧検索 -->
-    <select id="findAll" resultType="com.example.inventorymanagement.entity.Part">
+    <select id="findAll" resultType="entity.Part">
         SELECT
         id, part_name, process_id, model_number, stock_quantity, last_ordered_at
         FROM
@@ -13,7 +22,7 @@
     </select>
 
     <!-- 部品の種類別検索 -->
-    <select id="findByPartName" resultType="com.example.inventorymanagement.entity.Part">
+    <select id="findByPartName" resultType="entity.Part">
         SELECT
         id, part_name, process_id, model_number, stock_quantity, last_ordered_at
         FROM
@@ -21,5 +30,32 @@
         WHERE part_name LIKE CONCAT('%', #{partName}, '%')
         ORDER BY part_name
     </select>
-    
+
+    <!-- 部品登録 -->
+    <insert id="registerPart"
+            parameterType="entity.Part"
+            useGeneratedKeys="true"
+            keyProperty="id">
+
+        INSERT INTO part
+        (part_name, process_id, model_number, stock_quantity, last_ordered_at)
+        VALUES
+        (#{partName}, #{processId}, #{modelNumber}, #{stockQuantity}, #{lastOrderedAt})
+    </insert>
+
+    <!-- 部品情報更新 -->
+    <update id="updatePart" parameterType="entity.Part">
+        UPDATE part
+        SET
+        part_name = #{partName}, process_id = #{processId}, model_number = #{modelNumber}, stock_quantity =
+        #{stockQuantity}, last_ordered_at = #{lastOrderedAt}
+        WHERE
+        id = #{id}
+    </update>
+
+    <!-- 部品情報削除 -->
+    <delete id="deletePart">
+        DELETE FROM part WHERE id = #{id}
+    </delete>
+
 </mapper>
