@@ -1,0 +1,23 @@
+.process-menu {
+    list-style: none;
+    padding-left: 12px;
+    margin: 0;
+}
+.process-menu li {
+    margin-bottom: 12px;
+}
+.process-menu a {
+    display: block;
+    padding: 6px 10px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 4px;
+}
+.process-menu a:hover {
+    background-color: #e6f2ff;
+}
+.process-menu span {
+    display: block;
+    padding: 6px 10px;
+    color: #999;
+}

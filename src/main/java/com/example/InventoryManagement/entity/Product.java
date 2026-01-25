@@ -1,4 +1,4 @@
-package entity;
+package com.example.InventoryManagement.entity;
 
 import lombok.Getter;
 import lombok.Setter;

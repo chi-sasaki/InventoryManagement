@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.InventoryManagement.repository.ProcessMapper">
+
+    <!-- 全工程一覧の表示 -->
+    <select id="findAll" resultType="com.example.InventoryManagement.entity.ManufacturingProcess">
+        SELECT
+        id,
+        process_name AS processName,
+        sort_order AS sortOrder
+        FROM manufacturing_process
+        ORDER BY sort_order;
+    </select>
+
+</mapper>

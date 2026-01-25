@@ -1,6 +1,6 @@
-package repository;
+package com.example.InventoryManagement.repository;
 
-import entity.Part;
+import com.example.InventoryManagement.entity.Part;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -54,4 +54,12 @@ public interface PartMapper {
      * @param id 削除対象の部品ID
      */
     void deletePart(Long id);
+
+    /**
+     * 指定された工程IDに紐づく部品一覧を取得します。
+     *
+     * @param processId 工程ID
+     * @return 工程IDに紐づく部品一覧
+     */
+    List<Part> findByProcessId(Long processId);
 }

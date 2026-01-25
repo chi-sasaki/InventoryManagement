@@ -1,10 +1,10 @@
-package controller;
+package com.example.InventoryManagement.controller;
 
-import entity.Part;
+import com.example.InventoryManagement.entity.Part;
+import com.example.InventoryManagement.service.PartService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import service.PartService;
 
 /**
  * 部品情報の一覧表示・登録・更新・削除を行う
@@ -117,5 +117,18 @@ public class PartViewController {
     public String showDeleteForm(@PathVariable Long id, Model model) {
         model.addAttribute("part", partService.findById(id));
         return "parts/delete";
+    }
+
+    /**
+     * 指定された工程IDに紐づく部品一覧を取得し、部品一覧表示用のフラグメントを返します。
+     *
+     * @param processId 工程ID
+     * @param model     画面表示用
+     * @return 部品一覧フラグメント
+     */
+    @GetMapping("/parts/process/{processId}")
+    public String findByProcess(@PathVariable Long processId, Model model) {
+        model.addAttribute("parts", partService.findByProcessId(processId));
+        return "fragments/part-list :: partList";
     }
 }

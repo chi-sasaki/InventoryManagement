@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>在庫管理</title>
+    <link rel="stylesheet" th:href="@{/part-list.css}">
+    <link rel="stylesheet" th:href="@{/process-menu.css}">
+    <style>
+        .container {
+            display: flex;
+        }
+        .left {
+            width: 300px;
+            border-right: 0px solid #ccc;
+            padding-top: 50px;
+        }
+        .left ul {
+            padding-left: 16px;
+            list-style: none;
+        }
+        .left ul li {
+            margin-bottom: 15px;
+        }
+        .left ul li span {
+            display: block;
+            padding: 6px 8px;
+        }
+        .right {
+            flex: 1;
+            padding: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="left">
+        <div th:replace="fragments/process-menu :: menu"></div>
+    </div>
+
+    <div class="right" id="content">
+        <p>工程を選択してください</p>
+    </div>
+</div>
+
+<script src="/process.js"></script>
+</body>
+</html>

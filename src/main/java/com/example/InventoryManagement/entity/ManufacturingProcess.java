@@ -1,4 +1,4 @@
-package entity;
+package com.example.InventoryManagement.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,5 +8,5 @@ import lombok.Setter;
 public class ManufacturingProcess {
     private Long id;
     private String processName;
-
+    private Integer sortOrder;
 }
