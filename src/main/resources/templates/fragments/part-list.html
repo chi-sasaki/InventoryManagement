@@ -1,0 +1,63 @@
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="partList"
+     class="part-area">
+
+    <!-- 検索エリア -->
+    <div class="search-area">
+        <form id="searchForm">
+            <label>
+                種類：
+                <select name="type">
+                    <option value="">選択してください</option>
+                    <option value="A">種類A</option>
+                    <option value="B">種類B</option>
+                </select>
+            </label>
+
+            <button type="submit">検索</button>
+
+            <a href="#"
+               class="all-link"
+               onclick="loadAllParts()">全部品一覧</a>
+        </form>
+    </div>
+
+    <!-- 部品一覧 -->
+    <h2>部品一覧</h2>
+    <table class="part-table">
+        <thead>
+        <tr>
+            <th>名称</th>
+            <th>在庫数</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="part : ${parts}">
+            <td th:text="${part.partName}"></td>
+            <td th:text="${part.stockQuantity}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 登録・更新・削除 -->
+    <div class="edit-area">
+        <h3>部品登録・更新・削除</h3>
+        <form>
+            <input type="text" placeholder="部品名">
+            <input type="number" placeholder="数量">
+            <button type="button">登録</button>
+            <button type="button">更新</button>
+            <button type="button">削除</button>
+        </form>
+    </div>
+
+    <!-- 棚卸し -->
+    <div class="inventory-area">
+        <h3>棚卸し</h3>
+        <form>
+            <input type="number" placeholder="実在庫数">
+            <button type="button">棚卸し実行</button>
+        </form>
+    </div>
+
+</div>

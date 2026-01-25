@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.inventorymanagement.repository.PartMapper">
+<mapper namespace="com.example.InventoryManagement.repository.PartMapper">
 
     <!-- １件の部品idを取得する-->
     <select id="findById"
-            resultType="entity.Part">
+            resultType="com.example.InventoryManagement.entity.Part">
         SELECT
         id, part_name, process_id, model_number, stock_quantity, last_ordered_at
         FROM part
         WHERE id = #{id}
     </select>
 
+    <!-- 指定された工程に紐づく部品情報の一覧を返す -->
+    <select id="findByProcessId" parameterType="long" resultType="com.example.InventoryManagement.entity.Part">
+        SELECT
+        id,
+        part_name,
+        process_id,
+        model_number,
+        stock_quantity,
+        last_ordered_at
+        FROM part
+        WHERE process_id = #{processId}
+    </select>
+
     <!-- 部品の一覧検索 -->
-    <select id="findAll" resultType="entity.Part">
+    <select id="findAll" resultType="com.example.InventoryManagement.entity.Part">
         SELECT
         id, part_name, process_id, model_number, stock_quantity, last_ordered_at
         FROM
@@ -22,7 +35,7 @@
     </select>
 
     <!-- 部品の種類別検索 -->
-    <select id="findByPartName" resultType="entity.Part">
+    <select id="findByPartName" resultType="com.example.InventoryManagement.entity.Part">
         SELECT
         id, part_name, process_id, model_number, stock_quantity, last_ordered_at
         FROM
@@ -33,7 +46,7 @@
 
     <!-- 部品登録 -->
     <insert id="registerPart"
-            parameterType="entity.Part"
+            parameterType="com.example.InventoryManagement.entity.Part"
             useGeneratedKeys="true"
             keyProperty="id">
 
@@ -44,7 +57,7 @@
     </insert>
 
     <!-- 部品情報更新 -->
-    <update id="updatePart" parameterType="entity.Part">
+    <update id="updatePart" parameterType="com.example.InventoryManagement.entity.Part">
         UPDATE part
         SET
         part_name = #{partName}, process_id = #{processId}, model_number = #{modelNumber}, stock_quantity =

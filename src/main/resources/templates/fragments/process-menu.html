@@ -1,0 +1,18 @@
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="menu">
+    <ul class="process-menu">
+        <li th:each="process : ${processes}">
+            <!-- リンクを付けたい工程 -->
+            <a href="#"
+               th:if="${process.id == 3}"
+               th:text="${process.processName}"
+               th:onclick="|loadParts(${process.id})|">
+            </a>
+
+            <!-- それ以外はただの表示 -->
+            <span th:unless="${process.id == 3}"
+                  th:text="${process.processName}">
+        </span>
+        </li>
+    </ul>
+</div>

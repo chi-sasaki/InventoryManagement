@@ -1,4 +1,4 @@
-package entity;
+package com.example.InventoryManagement.entity;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,9 +1,9 @@
-package service;
+package com.example.InventoryManagement.service;
 
-import entity.Part;
+import com.example.InventoryManagement.entity.Part;
+import com.example.InventoryManagement.repository.PartMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import repository.PartMapper;
 
 import java.util.List;
 
@@ -26,6 +26,16 @@ public class PartService {
      */
     public Part findById(Long id) {
         return partMapper.findById(id);
+    }
+
+    /**
+     * 指定した工程IDに紐づく部品情報の一覧を取得します。
+     *
+     * @param processId 工程ID
+     * @return 工程IDに紐づく部品情報の一覧
+     */
+    public List<Part> findByProcessId(Long processId) {
+        return partMapper.findByProcessId(processId);
     }
 
     /**
@@ -83,5 +93,4 @@ public class PartService {
         }
         partMapper.deletePart(id);
     }
-
 }
