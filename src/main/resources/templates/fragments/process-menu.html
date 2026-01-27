@@ -1,6 +1,10 @@
 <div xmlns:th="http://www.thymeleaf.org"
      th:fragment="menu">
     <ul class="process-menu">
+        <!-- TOP -->
+        <li>
+            <a th:href="@{/inventory}">TOP</a>
+        </li>
         <li th:each="process : ${processes}">
             <!-- リンクを付けたい工程 -->
             <a href="#"
