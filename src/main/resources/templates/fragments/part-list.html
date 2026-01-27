@@ -27,37 +27,111 @@
     <table class="part-table">
         <thead>
         <tr>
-            <th>名称</th>
-            <th>在庫数</th>
+            <th>ID</th>
+            <th>部品名</th>
+            <th>型番</th>
+            <th>数量</th>
+            <th>最終入荷日</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="part : ${parts}">
+        <tr th:each="part : ${parts}"
+            th:onclick="|selectPart(${part.id}, this)|">
+            <td th:text="${part.id}"></td>
             <td th:text="${part.partName}"></td>
+            <td th:text="${part.modelNumber}"></td>
             <td th:text="${part.stockQuantity}"></td>
+            <td th:text="${#temporals.format(part.lastArrivedAt, 'yyyy/MM/dd')}"></td>
         </tr>
         </tbody>
     </table>
 
-    <!-- 登録・更新・削除 -->
-    <div class="edit-area">
-        <h3>部品登録・更新・削除</h3>
+    <div class="edit-area" id="editArea" style="display:none;">
+        <h3>部品更新・削除</h3>
+
         <form>
-            <input type="text" placeholder="部品名">
-            <input type="number" placeholder="数量">
-            <button type="button">登録</button>
-            <button type="button">更新</button>
-            <button type="button">削除</button>
+            <input type="hidden" id="partId">
+
+            <label>
+                部品名：
+                <input type="text" id="partName">
+            </label>
+
+            <label>
+                型番：
+                <input type="text" id="modelNumber">
+            </label>
+
+            <label>
+                数量：
+                <input type="number" id="quantity">
+            </label>
+
+            <label>
+                最終入荷日：
+                <input type="date" id="lastArrivedAt">
+            </label>
+
+            <button type="button" onclick="updatePart()">更新</button>
+            <button type="button" onclick="deletePart()">削除</button>
         </form>
     </div>
 
-    <!-- 棚卸し -->
+    <!-- 登録 -->
+    <h3>部品登録</h3>
+    <form>
+        <input type="text" placeholder="部品名">
+        <input type="text" placeholder="型番">
+        <input type="number" placeholder="初期数量">
+        <input type="date" placeholder="最終入荷日">
+        <button type="button" onclick="createPart()">登録</button>
+    </form>
+
+    <!-- 棚卸し（期間集計） -->
     <div class="inventory-area">
-        <h3>棚卸し</h3>
-        <form>
-            <input type="number" placeholder="実在庫数">
-            <button type="button">棚卸し実行</button>
+        <h3>棚卸し（期間指定）</h3>
+
+        <form onsubmit="return false;">
+            <label>
+                開始日：
+                <input type="date" id="from">
+            </label>
+
+            <label>
+                終了日：
+                <input type="date" id="to">
+            </label>
+
+            <button type="button" onclick="loadStockSummary()">集計する</button>
         </form>
+
+        <!-- 結果表示エリア -->
+        <div class="summary-area">
+            <!-- fetchで結果HTMLを差し替える -->
+        </div>
+    </div>
+
+    <div th:fragment="summary">
+        <h3>棚卸し結果</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>部品名</th>
+                <th>入庫</th>
+                <th>出庫</th>
+                <th>差引</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="s : ${partSummaries}">
+                <td th:text="${s.partName}"></td>
+                <td th:text="${s.totalIn}"></td>
+                <td th:text="${s.totalOut}"></td>
+                <td th:text="${s.difference}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
 </div>

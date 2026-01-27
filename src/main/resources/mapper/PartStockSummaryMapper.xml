@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.InventoryManagement.repository.PartStockSummaryMapper">
+
+    <!-- 指定された期間の部品の集計結果を取得します -->
+    <select id="findSummaryByPeriod"
+            resultType="com.example.InventoryManagement.dto.PartStockSummary">
+
+        SELECT
+        p.id AS partId,
+        p.name AS partName,
+        COALESCE(SUM(CASE
+        WHEN sh.action_type = 'IN' THEN sh.quantity
+        ELSE 0
+        END), 0) AS totalIn,
+
+        COALESCE(SUM(CASE
+        WHEN sh.action_type = 'OUT' THEN sh.quantity
+        ELSE 0
+        END), 0) AS totalOut
+
+        FROM part p
+        LEFT JOIN stock_history_part sh
+        ON sh.part_id = p.id
+        AND sh.action_at BETWEEN #{from} AND #{to}
+
+        GROUP BY p.id, p.name
+        ORDER BY p.id
+    </select>
+
+</mapper>
