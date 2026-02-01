@@ -41,6 +41,6 @@ public class StockViewController {
                         to.plusDays(1).atStartOfDay()
                 )
         );
-        return "fragments/part-stock-summary :: summary";
+        return "fragments/part-list :: partsContent";
     }
 }

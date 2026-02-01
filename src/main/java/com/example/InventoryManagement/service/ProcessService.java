@@ -25,4 +25,14 @@ public class ProcessService {
     public List<ManufacturingProcess> findAll() {
         return mapper.findAll();
     }
+
+    /**
+     * 指定IDの工程を取得します。
+     *
+     * @param id 工程ID
+     * @return 該当の工程、存在しない場合はnull
+     */
+    public ManufacturingProcess findById(Long id) {
+        return mapper.findById(id);
+    }
 }

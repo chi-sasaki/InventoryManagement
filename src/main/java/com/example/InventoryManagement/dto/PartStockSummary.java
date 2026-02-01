@@ -12,6 +12,6 @@ public class PartStockSummary {
     private Integer totalOut;
 
     public Integer getDifference() {
-        return totalIn - totalOut;
+        return (totalIn == null ? 0 : totalIn) - (totalOut == null ? 0 : totalOut);
     }
 }

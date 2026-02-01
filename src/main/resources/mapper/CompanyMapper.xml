@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.InventoryManagement.repository.CompanyMapper">
+
+    <!-- 製品の会社別検索 -->
+    <select id="findByCompanyName" resultType="com.example.InventoryManagement.entity.Company">
+        SELECT
+        id, company_name
+        FROM
+        company
+        WHERE company_name LIKE CONCAT('%', #{companyName}, '%')
+        ORDER BY company_name
+    </select>
+
+    <!-- 会社一覧 -->
+    <select id="findAll" resultType="com.example.InventoryManagement.entity.Company">
+        SELECT id, company_name
+        FROM company
+        ORDER BY company_name
+    </select>
+
+    <!-- 会社ID取得 -->
+    <select id="findById" resultType="com.example.InventoryManagement.entity.Company">
+        SELECT id, company_name
+        FROM company
+        WHERE id = #{id}
+    </select>
+
+    <!-- 登録 -->
+    <insert id="registerCompany"
+            parameterType="com.example.InventoryManagement.entity.Company"
+            useGeneratedKeys="true"
+            keyProperty="id">
+
+        INSERT INTO company (company_name)
+        VALUES (#{companyName})
+
+    </insert>
+
+    <!-- 更新 -->
+    <update id="updateCompany"
+            parameterType="com.example.InventoryManagement.entity.Company">
+
+        UPDATE company
+        SET company_name = #{companyName}
+        WHERE id = #{id}
+
+    </update>
+
+</mapper>

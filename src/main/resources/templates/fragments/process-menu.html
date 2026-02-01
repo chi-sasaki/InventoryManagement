@@ -1,22 +1,23 @@
-<div xmlns:th="http://www.thymeleaf.org"
-     th:fragment="menu">
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="menu">
     <ul class="process-menu">
         <!-- TOP -->
         <li>
             <a th:href="@{/inventory}">TOP</a>
         </li>
+
         <li th:each="process : ${processes}">
-            <!-- リンクを付けたい工程 -->
-            <a href="#"
-               th:if="${process.id == 3}"
+            <!-- 部品/製品などクリックで右画面切り替え -->
+            <a href="javascript:void(0)"
+               th:if="${process.id == 3 or process.id == 9}"
                th:text="${process.processName}"
-               th:onclick="|loadParts(${process.id})|">
+               th:data-id="${process.id}"
+               class="process-link">
             </a>
 
-            <!-- それ以外はただの表示 -->
-            <span th:unless="${process.id == 3}"
+            <!-- それ以外はただのテキスト -->
+            <span th:unless="${process.id == 3 or process.id == 9}"
                   th:text="${process.processName}">
-        </span>
+            </span>
         </li>
     </ul>
 </div>

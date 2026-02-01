@@ -1,32 +1,43 @@
 <div xmlns:th="http://www.thymeleaf.org"
-     th:fragment="partList"
-     class="part-area">
+     th:fragment="partsContent">
+    <input type="hidden" id="processId" th:value="${process != null ? process.id : ''}">
 
     <!-- 検索エリア -->
+    <h3 class="heading-1">部品検索</h3>
     <div class="search-area">
-        <form id="searchForm">
-            <label>
-                種類：
-                <select name="type">
-                    <option value="">選択してください</option>
-                    <option value="A">種類A</option>
-                    <option value="B">種類B</option>
-                </select>
-            </label>
+        <form onsubmit="searchPart(event)">
 
-            <button type="submit">検索</button>
+            <select name="partId">
+                <option value="">選択してください</option>
 
-            <a href="#"
-               class="all-link"
-               onclick="loadAllParts()">全部品一覧</a>
+                <option th:each="p : ${parts}"
+                        th:value="${p.id}"
+                        th:text="${p.partName}">
+                </option>
+            </select>
+
+            <button class="button-1" type="submit">検索</button>
+
+            <a href="#" onclick="loadAllParts()" class="all-link">全部品一覧</a>
+            <br>
         </form>
     </div>
 
     <!-- 部品一覧 -->
-    <h2>部品一覧</h2>
-    <table class="part-table">
+    <div class="box-009">
+        <div>
+            操作説明
+        </div>
+        <p>
+            ※ 部品の種類を選択して検索ボタンをクリックするか、全部品一覧をクリックすると部品情報が表示されます。<br>
+            ※ 部品名をクリックすると、更新画面が表示されます。<br>
+            ※ 製品名をクリックすると、更新画面が表示されます。<br>
+            ※ 削除する際は、削除したい製品にチェックを入れて「削除」ボタンをクリックしてください。
+        </p></div>
+    <table class="table">
         <thead>
         <tr>
+            <th>削除</th>
             <th>ID</th>
             <th>部品名</th>
             <th>型番</th>
@@ -35,61 +46,72 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="part : ${parts}"
-            th:onclick="|selectPart(${part.id}, this)|">
+        <tr th:each="part : ${parts}">
+            <td>
+                <input type="checkbox" name="deleteIds" th:value="${part.id}">
+            </td>
             <td th:text="${part.id}"></td>
-            <td th:text="${part.partName}"></td>
+            <td>
+                <a href="javascript:void(0);" th:onclick="|loadPart(${part.id})|">
+                    <span th:text="${part.partName}"></span>
+                </a>
+            </td>
             <td th:text="${part.modelNumber}"></td>
             <td th:text="${part.stockQuantity}"></td>
-            <td th:text="${#temporals.format(part.lastArrivedAt, 'yyyy/MM/dd')}"></td>
+            <td th:text="${#temporals.format(part.lastOrderedAt, 'yyyy/MM/dd')}"></td>
         </tr>
         </tbody>
     </table>
+    <h3 class="heading-1">部品の削除</h3>
+    <button class="button-1" onclick="deleteParts()">
+        削除
+    </button>
+    <br><br>
+    <div class="edit-area" th:if="${part != null}">
+        <h3 class="heading-1">部品の更新</h3>
 
-    <div class="edit-area" id="editArea" style="display:none;">
-        <h3>部品更新・削除</h3>
+        <input type="hidden" id="partId" th:value="${part != null ? part.id : ''}">
 
-        <form>
-            <input type="hidden" id="partId">
+        <label>
+            部品名：
+            <input type="text" id="partName" th:value="${part != null ? part.partName : ''}">
+        </label>
 
-            <label>
-                部品名：
-                <input type="text" id="partName">
-            </label>
+        <label>
+            型番：
+            <input type="text" id="modelNumber" th:value="${part != null ? part.modelNumber : ''}">
+        </label>
 
-            <label>
-                型番：
-                <input type="text" id="modelNumber">
-            </label>
+        <label>
+            数量：
+            <input type="number" id="stockQuantity" th:value="${part != null ? part.stockQuantity : ''}">
+        </label>
 
-            <label>
-                数量：
-                <input type="number" id="quantity">
-            </label>
-
-            <label>
-                最終入荷日：
-                <input type="date" id="lastArrivedAt">
-            </label>
-
-            <button type="button" onclick="updatePart()">更新</button>
-            <button type="button" onclick="deletePart()">削除</button>
-        </form>
+        <label>
+            最終入荷日：
+            <input type="date" id="lastOrderedAt"
+                   th:value="${part != null && part.lastOrderedAt != null ? #temporals.format(part.lastOrderedAt,'yyyy-MM-dd') : ''}">
+        </label>
+        <br><br>
+        <button class="button-1" onclick="updatePart()">更新</button>
     </div>
 
     <!-- 登録 -->
-    <h3>部品登録</h3>
-    <form>
-        <input type="text" placeholder="部品名">
-        <input type="text" placeholder="型番">
-        <input type="number" placeholder="初期数量">
-        <input type="date" placeholder="最終入荷日">
-        <button type="button" onclick="createPart()">登録</button>
+    <h3 class="heading-1">部品の登録</h3>
+    <form onsubmit="registerPart(event)">
+        <input type="hidden" name="processId"
+               th:value="${process.id}">
+        <input type="text" name="partName" placeholder="部品名">
+        <input type="text" name="modelNumber" placeholder="型番">
+        <input type="number" name="stockQuantity" placeholder="初期数量">
+        <input type="date" name="lastOrderedAt">
+        <br><br>
+        <button class="button-1" type="submit">登録</button>
     </form>
 
     <!-- 棚卸し（期間集計） -->
     <div class="inventory-area">
-        <h3>棚卸し（期間指定）</h3>
+        <h3 class="heading-1">棚卸し（期間指定）</h3>
 
         <form onsubmit="return false;">
             <label>
@@ -101,8 +123,8 @@
                 終了日：
                 <input type="date" id="to">
             </label>
-
-            <button type="button" onclick="loadStockSummary()">集計する</button>
+            <br><br>
+            <button class="button-1" onclick="loadStockSummary()">集計</button>
         </form>
 
         <!-- 結果表示エリア -->
@@ -112,9 +134,9 @@
     </div>
 
     <div th:fragment="summary">
-        <h3>棚卸し結果</h3>
+        <h3 class="heading-1">棚卸し結果</h3>
 
-        <table>
+        <table class="table">
             <thead>
             <tr>
                 <th>部品名</th>
@@ -133,5 +155,4 @@
             </tbody>
         </table>
     </div>
-
 </div>

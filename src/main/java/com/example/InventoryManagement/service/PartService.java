@@ -86,11 +86,18 @@ public class PartService {
     public void deletePart(Long id) {
         Part part = partMapper.findById(id);
         if (part == null) {
-            throw new IllegalArgumentException("削除対象が存在しません");
+            throw new IllegalArgumentException("部品が存在しません");
         }
         if (part.getStockQuantity() > 0) {
             throw new IllegalStateException("在庫が残っている部品は削除できません");
         }
         partMapper.deletePart(id);
+    }
+
+    @Transactional
+    public void deleteParts(List<Long> ids) {
+        for (Long id : ids) {
+            deletePart(id);
+        }
     }
 }

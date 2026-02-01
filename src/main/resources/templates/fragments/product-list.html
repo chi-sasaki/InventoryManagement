@@ -1,0 +1,153 @@
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="productsContent">
+
+    <!-- 検索エリア -->
+    <h3 class="heading-1">製品（在庫）検索</h3>
+    <div class="search-area">
+        <form onsubmit="searchProduct(event)">
+            <label>
+                会社名：
+                <select name="companyId">
+                    <option value="">選択してください</option>
+                    <option th:each="company : ${companies}"
+                            th:value="${company.id}"
+                            th:text="${company.companyName}">
+                    </option>
+                </select>
+            </label>
+
+            <button class="button-1" type="submit">検索</button>
+
+            <a href="#" onclick="loadAllProducts()" class="all-link">全製品（在庫）一覧</a>
+            <br>
+        </form>
+    </div>
+
+    <!-- 製品一覧 -->
+    <div class="box-009">
+        <div>
+            操作説明
+        </div>
+        <p>
+            ※ 会社名を選択して検索ボタンをクリックするか、全製品（在庫）一覧をクリックすると製品情報が表示されます。<br>
+            ※ 製品名、在庫数、最終注文日の横にある▲▼をクリックすると、昇順、降順に並び替えできます。<br>
+            ※ 製品名をクリックすると、更新画面が表示されます。<br>
+            ※ 削除する際は、削除したい製品にチェックを入れて「削除」ボタンをクリックしてください。
+        </p></div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>削除</th>
+            <th>ID</th>
+            <th>会社名</th>
+            <th>
+                製品名
+                <!-- ▲ -->
+                <a href="#" onclick="orderByName('asc')">▲</a>
+                <!-- ▼ -->
+                <a href="#" onclick="orderByName('desc')">▼</a>
+            </th>
+            <th>型番</th>
+            <th>
+                在庫数
+                <!-- ▲ -->
+                <a href="#" onclick="orderByStock('asc')">▲</a>
+                <!-- ▼ -->
+                <a href="#" onclick="orderByStock('desc')">▼</a>
+            </th>
+            <th>
+                最終注文日
+                <!-- ▲ -->
+                <a href="#" onclick="lastOrdered('asc')">▲</a>
+                <!-- ▼ -->
+                <a href="#" onclick="lastOrdered('desc')">▼</a>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${products}">
+            <td>
+                <input type="checkbox" name="deleteIds" th:value="${p.id}">
+            </td>
+
+            <td th:text="${p.id}"></td>
+
+            <td th:text="${p.companyName}"></td>
+
+            <td>
+                <a th:onclick="|loadProduct(${p.id})|"
+                   th:text="${p.productName}">
+                </a>
+            </td>
+            <td th:text="${p.modelNumber}"></td>
+            <td th:text="${p.stockQuantity}"></td>
+            <td th:text="${p.lastOrderedAt != null ?
+             #temporals.format(p.lastOrderedAt, 'yyyy/MM/dd') : ''}">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <h3 class="heading-1">製品（在庫）の削除</h3>
+    <div class="bulk-delete-area">
+        <button class="button-1" onclick="deleteProducts()">
+            削除
+        </button>
+        <br><br>
+    </div>
+    <div class="edit-area"
+         th:if="${product != null}">
+        <h3 class="heading-1">製品（在庫）の更新</h3>
+
+        <select id="companyId">
+            <option th:each="company : ${companies}"
+                    th:value="${company.id}"
+                    th:text="${company.companyName}"
+                    th:selected="${company.id == product.companyId}">
+            </option>
+        </select>
+        <label>
+            製品名：
+            <input type="text" name="productName" id="productName" th:value="${product.productName}">
+        </label>
+
+        <label>
+            型番：
+            <input type="text" id="modelNumber" th:value="${product.modelNumber}">
+        </label>
+
+        <label>
+            在庫数：
+            <input type="number" id="quantity" th:value="${product.stockQuantity}">
+        </label>
+
+        <label>
+            最終注文日：
+            <input type="date" id="lastOrderedAt"
+                   th:value="${product.lastOrderedAt != null ? #temporals.format(product.lastOrderedAt,'yyyy-MM-dd') : ''}">
+        </label>
+
+        <input type="hidden" id="productId" th:value="${product.id}">
+        <br><br>
+        <button class="button-1" onclick="updateProduct()">更新</button>
+    </div>
+
+    <!-- 登録 -->
+    <h3 class="heading-1">製品の登録</h3>
+    <form onsubmit="registerProduct(event)">
+
+        <select name="companyId">
+            <option th:each="company : ${companies}"
+                    th:value="${company.id}"
+                    th:text="${company.companyName}">
+            </option>
+        </select>
+        <input type="text" name="productName" placeholder="製品名">
+        <input type="text" name="modelNumber" placeholder="型番">
+        <input type="number" name="stockQuantity" placeholder="在庫数">
+        <input type="date" name="lastOrderedAt">
+
+        <br><br>
+
+        <button type="submit" class="button-1">登録</button>
+    </form>
+</div>

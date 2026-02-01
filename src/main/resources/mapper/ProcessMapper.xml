@@ -12,4 +12,14 @@
         ORDER BY sort_order;
     </select>
 
+    <!-- 指定IDの工程を取得 -->
+    <select id="findById" parameterType="long" resultType="com.example.InventoryManagement.entity.ManufacturingProcess">
+        SELECT
+        id,
+        process_name AS processName,
+        sort_order AS sortOrder
+        FROM manufacturing_process
+        WHERE id = #{id}
+    </select>
+
 </mapper>
