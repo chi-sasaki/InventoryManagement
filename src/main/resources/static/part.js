@@ -1,5 +1,5 @@
 function loadAllParts() {
-    fetch('/parts')
+    fetch('/parts/all')
         .then(res => res.text())
         .then(html => {
             document.getElementById("content").innerHTML = html;
@@ -27,10 +27,8 @@ function loadPart(partId) {
 
 function searchPart(e) {
     e.preventDefault();
-
     const form = e.target;
     const params = new URLSearchParams(new FormData(form));
-
     fetch(`/parts/search?${params}`)
         .then(res => res.text())
         .then(html => {

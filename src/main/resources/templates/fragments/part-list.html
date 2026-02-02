@@ -1,25 +1,16 @@
 <div xmlns:th="http://www.thymeleaf.org"
      th:fragment="partsContent">
-    <input type="hidden" id="processId" th:value="${process != null ? process.id : ''}">
 
     <!-- 検索エリア -->
     <h3 class="heading-1">部品検索</h3>
     <div class="search-area">
         <form onsubmit="searchPart(event)">
-
             <select name="partId">
                 <option value="">選択してください</option>
-
-                <option th:each="p : ${parts}"
-                        th:value="${p.id}"
-                        th:text="${p.partName}">
-                </option>
+                <option th:each="p : ${allParts}" th:value="${p.id}" th:text="${p.partName}"></option>
             </select>
-
             <button class="button-1" type="submit">検索</button>
-
-            <a href="#" onclick="loadAllParts()" class="all-link">全部品一覧</a>
-            <br>
+            <a href="javascript:void(0);" onclick="loadAllParts()" class="all-link">全部品一覧</a>
         </form>
     </div>
 
@@ -47,15 +38,10 @@
         </thead>
         <tbody>
         <tr th:each="part : ${parts}">
-            <td>
-                <input type="checkbox" name="deleteIds" th:value="${part.id}">
-            </td>
+            <td><input type="checkbox" name="deleteIds" th:value="${part.id}"></td>
             <td th:text="${part.id}"></td>
-            <td>
-                <a href="javascript:void(0);" th:onclick="|loadPart(${part.id})|">
-                    <span th:text="${part.partName}"></span>
-                </a>
-            </td>
+            <td><a href="javascript:void(0);" th:onclick="|loadPart(${part.id})|">
+                <span th:text="${part.partName}"></span></a></td>
             <td th:text="${part.modelNumber}"></td>
             <td th:text="${part.stockQuantity}"></td>
             <td th:text="${#temporals.format(part.lastOrderedAt, 'yyyy/MM/dd')}"></td>
@@ -100,7 +86,7 @@
     <h3 class="heading-1">部品の登録</h3>
     <form onsubmit="registerPart(event)">
         <input type="hidden" name="processId"
-               th:value="${process.id}">
+               th:value="${process != null && process.id != null ? process.id : ''}">
         <input type="text" name="partName" placeholder="部品名">
         <input type="text" name="modelNumber" placeholder="型番">
         <input type="number" name="stockQuantity" placeholder="初期数量">

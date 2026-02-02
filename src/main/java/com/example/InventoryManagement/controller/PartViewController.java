@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,7 +37,9 @@ public class PartViewController {
      */
     @GetMapping("/parts")
     public String list(Model model) {
-        model.addAttribute("parts", partService.findAll());
+        model.addAttribute("parts", Collections.emptyList());
+        model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("process", null);
         return "fragments/part-list :: partsContent";
     }
 
@@ -44,11 +47,25 @@ public class PartViewController {
     @GetMapping("/parts/search")
     public String searchById(
             @RequestParam(required = false) Long partId, Model model) {
+        List<Part> parts;
         if (partId == null) {
-            model.addAttribute("parts", partService.findAll());
+            parts = Collections.emptyList();
         } else {
-            model.addAttribute("parts", List.of(partService.findById(partId)));
+            Part p = partService.findById(partId);
+            parts = p != null ? List.of(p) : List.of();
         }
+        model.addAttribute("parts", parts);
+        model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("process", null);
+        return "fragments/part-list :: partsContent";
+    }
+
+    @GetMapping("/parts/all")
+    public String allParts(Model model) {
+        List<Part> parts = partService.findAll();
+        model.addAttribute("parts", parts);
+        model.addAttribute("allParts", parts);
+        model.addAttribute("process", null);
         return "fragments/part-list :: partsContent";
     }
 
@@ -62,6 +79,7 @@ public class PartViewController {
     public String registerPart(@Valid Part part, Model model) {
         partService.registerPart(part);
         model.addAttribute("parts", partService.findByProcessId(part.getProcessId()));
+        model.addAttribute("allParts", partService.findAll());
         model.addAttribute("process", processService.findById(part.getProcessId()));
         model.addAttribute("part", null);
         return "fragments/part-list :: partsContent";
@@ -77,6 +95,7 @@ public class PartViewController {
     public String updatePart(@ModelAttribute Part part, Model model) {
         partService.updatePart(part);
         model.addAttribute("parts", partService.findByProcessId(part.getProcessId()));
+        model.addAttribute("allParts", partService.findAll());
         model.addAttribute("process", processService.findById(part.getProcessId()));
         model.addAttribute("part", partService.findById(part.getId()));
         return "fragments/part-list :: partsContent";
@@ -89,7 +108,9 @@ public class PartViewController {
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
-        model.addAttribute("parts", partService.findAll());
+        model.addAttribute("parts", Collections.emptyList());
+        model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("process", null);
         return "fragments/part-list :: partsContent";
     }
 
@@ -97,10 +118,10 @@ public class PartViewController {
     public String editPart(@PathVariable Long id, Model model) {
         Part part = partService.findById(id);
         model.addAttribute("part", part);
-        model.addAttribute("parts", partService.findAll());
+        model.addAttribute("parts", Collections.emptyList());
+        model.addAttribute("allParts", partService.findAll());
         if (part != null && part.getProcessId() != null) {
-            ManufacturingProcess process = processService.findById(part.getProcessId());
-            model.addAttribute("process", process);
+            model.addAttribute("process", processService.findById(part.getProcessId()));
         }
         return "fragments/part-list :: partsContent";
     }
