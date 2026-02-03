@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.InventoryManagement.repository.ProductMapper">
+
+    <!-- １件の製品idを取得する-->
+    <select id="findById"
+            resultType="com.example.InventoryManagement.entity.Product">
+        SELECT
+        p.id,
+        p.product_name AS productName,
+        p.company_id AS companyId,
+        c.company_name AS companyName,
+        p.process_id,
+        p.model_number AS modelNumber,
+        p.stock_quantity AS stockQuantity,
+        p.last_ordered_at AS lastOrderedAt
+        FROM product p
+        LEFT JOIN company c
+        ON p.company_id = c.id
+        WHERE p.id = #{id}
+    </select>
+
+    <!-- 会社IDを取得する -->
+    <select id="findByCompanyId"
+            resultType="com.example.InventoryManagement.entity.Product">
+
+        SELECT
+        p.id,
+        p.product_name AS productName,
+        p.company_id AS companyId,
+        c.company_name AS companyName,
+        p.process_id,
+        p.model_number AS modelNumber,
+        p.stock_quantity AS stockQuantity,
+        p.last_ordered_at AS lastOrderedAt
+        FROM product p
+        LEFT JOIN company c ON p.company_id = c.id
+        WHERE p.company_id = #{companyId}
+
+    </select>
+
+    <!-- 指定された工程に紐づく製品情報の一覧を返す -->
+    <select id="findByProcessId" parameterType="long" resultType="com.example.InventoryManagement.entity.Product">
+        SELECT
+        p.id,
+        p.product_name AS productName,
+        p.company_id AS companyId,
+        c.company_name AS companyName,
+        p.process_id AS processId,
+        p.model_number AS modelNumber,
+        p.stock_quantity AS stockQuantity,
+        p.last_ordered_at AS lastOrderedAt
+        FROM product p
+        LEFT JOIN company c ON p.company_id = c.id
+        WHERE p.process_id = #{processId}
+    </select>
+
+    <!-- 製品の一覧検索 -->
+    <select id="findAll" resultType="com.example.InventoryManagement.entity.Product">
+        SELECT
+        p.id,
+        p.product_name AS productName,
+        p.company_id AS companyId,
+        c.company_name AS companyName,
+        p.process_id AS processId,
+        p.model_number AS modelNumber,
+        p.stock_quantity AS stockQuantity,
+        p.last_ordered_at AS lastOrderedAt
+        FROM product p
+        LEFT JOIN company c ON p.company_id = c.id
+        ORDER BY p.id
+    </select>
+
+    <!-- 製品登録 -->
+    <insert id="registerProduct"
+            parameterType="com.example.InventoryManagement.entity.Product"
+            useGeneratedKeys="true"
+            keyProperty="id">
+
+        INSERT INTO product
+        (product_name, model_number, stock_quantity, last_ordered_at, company_id)
+        VALUES
+        (#{productName}, #{modelNumber}, #{stockQuantity}, #{lastOrderedAt}, #{companyId})
+    </insert>
+
+    <!-- 製品情報更新 -->
+    <update id="updateProduct" parameterType="com.example.InventoryManagement.entity.Product">
+        UPDATE product
+        SET
+        product_name = #{productName}, company_id = #{companyId}, model_number = #{modelNumber},
+        stock_quantity = #{stockQuantity}, last_ordered_at = #{lastOrderedAt}
+        WHERE
+        id = #{id}
+    </update>
+
+    <!-- 製品情報削除 -->
+    <delete id="deleteProduct">
+        DELETE FROM product WHERE id = #{id}
+    </delete>
+
+    <!-- 最終注文日の並び替え（古い順 / 新しい順） -->
+    <select id="lastOrdered" resultType="com.example.InventoryManagement.entity.Product">
+        SELECT
+        p.id,
+        p.product_name AS productName,
+        p.company_id AS companyId,
+        c.company_name AS companyName,
+        p.process_id,
+        p.model_number AS modelNumber,
+        p.stock_quantity AS stockQuantity,
+        p.last_ordered_at AS lastOrderedAt
+        FROM product p
+        LEFT JOIN company c ON p.company_id = c.id
+
+        <choose>
+            <when test="sort == 'asc'">
+                ORDER BY p.last_ordered_at ASC
+            </when>
+            <otherwise>
+                ORDER BY p.last_ordered_at DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 在庫数が少ない順 / 多い順 -->
+    <select id="orderByStock" resultType="com.example.InventoryManagement.entity.Product">
+        SELECT
+        p.id,
+        p.product_name AS productName,
+        p.company_id AS companyId,
+        c.company_name AS companyName,
+        p.process_id,
+        p.model_number AS modelNumber,
+        p.stock_quantity AS stockQuantity,
+        p.last_ordered_at AS lastOrderedAt
+        FROM product p
+        LEFT JOIN company c ON p.company_id = c.id
+
+        <choose>
+            <when test="sort == 'asc'">
+                ORDER BY p.stock_quantity ASC
+            </when>
+            <otherwise>
+                ORDER BY p.stock_quantity DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 品名（アルファベット昇順 / 降順） -->
+    <select id="orderByName" resultType="com.example.InventoryManagement.entity.Product">
+        SELECT
+        p.id,
+        p.product_name AS productName,
+        p.company_id AS companyId,
+        c.company_name AS companyName,
+        p.process_id,
+        p.model_number AS modelNumber,
+        p.stock_quantity AS stockQuantity,
+        p.last_ordered_at AS lastOrderedAt
+        FROM product p
+        LEFT JOIN company c ON p.company_id = c.id
+
+        <choose>
+            <when test="sort == 'asc'">
+                ORDER BY p.product_name ASC
+            </when>
+            <otherwise>
+                ORDER BY p.product_name DESC
+            </otherwise>
+        </choose>
+    </select>
+
+</mapper>

@@ -60,8 +60,8 @@
     <update id="updatePart" parameterType="com.example.InventoryManagement.entity.Part">
         UPDATE part
         SET
-        part_name = #{partName}, process_id = #{processId}, model_number = #{modelNumber}, stock_quantity =
-        #{stockQuantity}, last_ordered_at = #{lastOrderedAt}
+        part_name = #{partName}, process_id = #{processId}, model_number = #{modelNumber},
+        stock_quantity = #{stockQuantity}, last_ordered_at = #{lastOrderedAt}
         WHERE
         id = #{id}
     </update>

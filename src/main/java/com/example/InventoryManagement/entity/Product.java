@@ -8,4 +8,6 @@ import lombok.Setter;
 public class Product extends StockRecord {
     private Long id;
     private String productName;
+    private Long companyId;
+    private String companyName;
 }

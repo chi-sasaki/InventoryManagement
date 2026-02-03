@@ -14,4 +14,9 @@ public interface ProcessMapper {
      * @return 全ての工程の一覧
      */
     List<ManufacturingProcess> findAll();
+
+    /**
+     * 指定IDの工程を取得します。
+     */
+    ManufacturingProcess findById(Long id);
 }

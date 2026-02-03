@@ -8,23 +8,29 @@
 
         SELECT
         p.id AS partId,
-        p.name AS partName,
-        COALESCE(SUM(CASE
-        WHEN sh.action_type = 'IN' THEN sh.quantity
-        ELSE 0
-        END), 0) AS totalIn,
+        p.part_name AS partName,
 
-        COALESCE(SUM(CASE
-        WHEN sh.action_type = 'OUT' THEN sh.quantity
+        COALESCE(SUM(
+        CASE
+        WHEN sh.quantity > 0 THEN sh.quantity
         ELSE 0
-        END), 0) AS totalOut
+        END
+        ), 0) AS totalIn,
+
+        COALESCE(SUM(
+        CASE
+        WHEN sh.quantity &lt; 0 THEN ABS(sh.quantity)
+        ELSE 0
+        END
+        ), 0) AS totalOut
 
         FROM part p
         LEFT JOIN stock_history_part sh
         ON sh.part_id = p.id
-        AND sh.action_at BETWEEN #{from} AND #{to}
+        AND sh.action_at >= #{from}
+        AND sh.action_at &lt; #{to}
 
-        GROUP BY p.id, p.name
+        GROUP BY p.id, p.part_name
         ORDER BY p.id
     </select>
 

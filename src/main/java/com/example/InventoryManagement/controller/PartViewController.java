@@ -1,22 +1,32 @@
 package com.example.InventoryManagement.controller;
 
+import com.example.InventoryManagement.entity.ManufacturingProcess;
 import com.example.InventoryManagement.entity.Part;
 import com.example.InventoryManagement.service.PartService;
+import com.example.InventoryManagement.service.ProcessService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 部品情報の一覧表示・登録・更新・削除を行う
  * 画面（View）用のコントローラクラスです。
  */
 
+@Validated
 @Controller
 public class PartViewController {
     private final PartService partService;
+    private final ProcessService processService;
 
-    public PartViewController(PartService partService) {
+    public PartViewController(PartService partService, ProcessService processService) {
         this.partService = partService;
+        this.processService = processService;
     }
 
     /**
@@ -27,22 +37,36 @@ public class PartViewController {
      */
     @GetMapping("/parts")
     public String list(Model model) {
-        model.addAttribute("parts", partService.findAll());
-        return "parts/list";
+        model.addAttribute("parts", Collections.emptyList());
+        model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("process", null);
+        return "fragments/part-list :: partsContent";
     }
 
-    /**
-     * 指定した部品名を条件に部品情報を検索し、一覧画面を表示します。
-     *
-     * @param partName 検索条件となる部品名
-     * @param model    画面表示用
-     * @return 部品一覧画面
-     */
+
     @GetMapping("/parts/search")
-    public String searchByName(
-            @RequestParam String partName, Model model) {
-        model.addAttribute("parts", partService.findByPartName(partName));
-        return "parts/list";
+    public String searchById(
+            @RequestParam(required = false) Long partId, Model model) {
+        List<Part> parts;
+        if (partId == null) {
+            parts = Collections.emptyList();
+        } else {
+            Part p = partService.findById(partId);
+            parts = p != null ? List.of(p) : List.of();
+        }
+        model.addAttribute("parts", parts);
+        model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("process", null);
+        return "fragments/part-list :: partsContent";
+    }
+
+    @GetMapping("/parts/all")
+    public String allParts(Model model) {
+        List<Part> parts = partService.findAll();
+        model.addAttribute("parts", parts);
+        model.addAttribute("allParts", parts);
+        model.addAttribute("process", null);
+        return "fragments/part-list :: partsContent";
     }
 
     /**
@@ -52,21 +76,13 @@ public class PartViewController {
      * @return 登録後、部品一覧画面へリダイレクト
      */
     @PostMapping("/parts/register")
-    public String registerPart(@ModelAttribute Part part) {
+    public String registerPart(@Valid Part part, Model model) {
         partService.registerPart(part);
-        return "redirect:/parts";
-    }
-
-    /**
-     * 部品登録画面を表示します。
-     *
-     * @param model 画面表示用
-     * @return 部品登録画面
-     */
-    @GetMapping("/parts/new")
-    public String showRegisterForm(Model model) {
-        model.addAttribute("part", new Part());
-        return "parts/new";
+        model.addAttribute("parts", partService.findByProcessId(part.getProcessId()));
+        model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("process", processService.findById(part.getProcessId()));
+        model.addAttribute("part", null);
+        return "fragments/part-list :: partsContent";
     }
 
     /**
@@ -76,47 +92,38 @@ public class PartViewController {
      * @return 更新後、部品一覧画面へリダイレクト
      */
     @PostMapping("/parts/update")
-    public String updatePart(@ModelAttribute Part part) {
+    public String updatePart(@ModelAttribute Part part, Model model) {
         partService.updatePart(part);
-        return "redirect:/parts";
+        model.addAttribute("parts", partService.findByProcessId(part.getProcessId()));
+        model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("process", processService.findById(part.getProcessId()));
+        model.addAttribute("part", partService.findById(part.getId()));
+        return "fragments/part-list :: partsContent";
     }
 
-    /**
-     * 指定したIDの部品情報を取得し、編集画面を表示します。
-     *
-     * @param id    編集対象の部品ID
-     * @param model 画面表示用
-     * @return 部品編集画面
-     */
+    @PostMapping("/parts/delete")
+    public String deleteParts(@RequestParam List<Long> deleteIds, Model model) {
+        try {
+            partService.deleteParts(deleteIds);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+        model.addAttribute("parts", Collections.emptyList());
+        model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("process", null);
+        return "fragments/part-list :: partsContent";
+    }
+
     @GetMapping("/parts/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("part", partService.findById(id));
-        return "parts/edit";
-    }
-
-    /**
-     * 指定したIDの部品情報を削除します。
-     *
-     * @param id 削除対象の部品ID
-     * @return 削除後、部品一覧画面へリダイレクト
-     */
-    @PostMapping("/parts/{id}/delete")
-    public String deletePart(@PathVariable Long id) {
-        partService.deletePart(id);
-        return "redirect:/parts";
-    }
-
-    /**
-     * 指定したIDの部品情報を取得し、削除確認画面を表示します。
-     *
-     * @param id    削除対象の部品ID
-     * @param model 画面表示用
-     * @return 部品削除確認画面
-     */
-    @GetMapping("/parts/{id}/delete")
-    public String showDeleteForm(@PathVariable Long id, Model model) {
-        model.addAttribute("part", partService.findById(id));
-        return "parts/delete";
+    public String editPart(@PathVariable Long id, Model model) {
+        Part part = partService.findById(id);
+        model.addAttribute("part", part);
+        model.addAttribute("parts", Collections.emptyList());
+        model.addAttribute("allParts", partService.findAll());
+        if (part != null && part.getProcessId() != null) {
+            model.addAttribute("process", processService.findById(part.getProcessId()));
+        }
+        return "fragments/part-list :: partsContent";
     }
 
     /**
@@ -129,6 +136,8 @@ public class PartViewController {
     @GetMapping("/parts/process/{processId}")
     public String findByProcess(@PathVariable Long processId, Model model) {
         model.addAttribute("parts", partService.findByProcessId(processId));
-        return "fragments/part-list :: partList";
+        ManufacturingProcess process = processService.findById(processId);
+        model.addAttribute("process", process);
+        return "fragments/part-list :: partsContent";
     }
 }

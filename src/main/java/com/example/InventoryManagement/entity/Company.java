@@ -1,13 +1,11 @@
 package com.example.InventoryManagement.entity;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Part extends StockRecord {
+public class Company {
     private Long id;
-    @NotBlank
-    private String partName;
+    private String companyName;
 }
