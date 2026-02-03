@@ -28,11 +28,10 @@ public class StockApiController {
      * @param to   集計終了日（この日を含む）
      * @return 指定された期間の部品の入出庫数の集計結果
      */
-    @GetMapping("/api/stock/summary/parts")
+    @GetMapping("/api/stock/summary")
     public List<PartStockSummary> getPartSummaries(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        return summaryService.getPartSummaries(from.atStartOfDay(), to.plusDays(1).atStartOfDay());
+        return summaryService.getPartSummaries(from, to.plusDays(1));
     }
-
 }

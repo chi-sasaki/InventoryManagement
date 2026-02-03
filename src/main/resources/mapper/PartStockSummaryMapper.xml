@@ -34,4 +34,19 @@
         ORDER BY p.id
     </select>
 
+    <!-- 指定された部品の入出庫履歴を登録します -->
+    <insert id="insertHistory">
+        INSERT INTO stock_history_part
+        (part_id, quantity, action_at)
+        VALUES
+        (#{partId}, #{quantity}, #{actionAt})
+    </insert>
+
+    <!-- 指定された部品IDの入出庫履歴が既に存在するかを確認します -->
+    <select id="existsHistoryByPartId" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM stock_history_part
+        WHERE part_id = #{partId}
+    </select>
+
 </mapper>

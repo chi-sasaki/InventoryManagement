@@ -34,7 +34,6 @@
 
         INSERT INTO company (company_name)
         VALUES (#{companyName})
-
     </insert>
 
     <!-- 更新 -->
@@ -44,7 +43,11 @@
         UPDATE company
         SET company_name = #{companyName}
         WHERE id = #{id}
-
     </update>
+
+    <!-- 削除（RESTAPI用） -->
+    <delete id="deleteCompany">
+        DELETE FROM company WHERE id = #{id}
+    </delete>
 
 </mapper>

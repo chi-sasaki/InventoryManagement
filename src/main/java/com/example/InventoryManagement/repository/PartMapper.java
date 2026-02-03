@@ -2,6 +2,7 @@ package com.example.InventoryManagement.repository;
 
 import com.example.InventoryManagement.entity.Part;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -25,14 +26,6 @@ public interface PartMapper {
      * @return 取得した部品情報の一覧
      */
     List<Part> findAll();
-
-    /**
-     * 指定した部品名を条件に部品情報を検索します。
-     *
-     * @param partName 検索対象の部品名
-     * @return 条件に一致する部品情報の一覧
-     */
-    List<Part> findByPartName(String partName);
 
     /**
      * 部品情報を新規登録します。
@@ -61,5 +54,5 @@ public interface PartMapper {
      * @param processId 工程ID
      * @return 工程IDに紐づく部品一覧
      */
-    List<Part> findByProcessId(Long processId);
+    List<Part> findByProcessId(@Param("processId") Long processId);
 }

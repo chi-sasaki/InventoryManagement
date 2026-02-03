@@ -1,21 +1,28 @@
 package com.example.InventoryManagement.service;
 
 import com.example.InventoryManagement.entity.Part;
+import com.example.InventoryManagement.entity.StockHistoryPart;
 import com.example.InventoryManagement.repository.PartMapper;
+import com.example.InventoryManagement.repository.PartStockSummaryMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
- * 部品情報の検索、登録、更新、削除を行います。
+ * 部品情報の取得、工程ごとの一覧取得、登録、更新、削除、および
+ * 入出庫履歴の登録などを行うサービスクラスです。
+ *
  */
 @Service
 public class PartService {
     private final PartMapper partMapper;
+    private final PartStockSummaryMapper partStockSummaryMapper;
 
-    public PartService(PartMapper partMapper) {
+    public PartService(PartMapper partMapper, PartStockSummaryMapper partStockSummaryMapper) {
         this.partMapper = partMapper;
+        this.partStockSummaryMapper = partStockSummaryMapper;
     }
 
     /**
@@ -48,39 +55,54 @@ public class PartService {
     }
 
     /**
-     * 指定した部品名を条件に部品情報を検索します。
-     *
-     * @param partName 検索対象の部品名
-     * @return 条件に一致する部品情報の一覧
-     */
-    public List<Part> findByPartName(String partName) {
-        return partMapper.findByPartName(partName);
-    }
-
-    /**
-     * 部品情報を新規登録します。
+     * 部品情報を登録します。
+     * 初期在庫が指定されている場合は、入出庫履歴として登録します。
      *
      * @param part 登録する部品情報
      */
     @Transactional
     public void registerPart(Part part) {
         partMapper.registerPart(part);
+        if (part.getStockQuantity() != null
+                && part.getStockQuantity() > 0) {
+
+            StockHistoryPart history = new StockHistoryPart();
+            history.setPartId(part.getId());
+            history.setQuantity(part.getStockQuantity());
+            history.setActionAt(part.getLastOrderedAt() != null ? part.getLastOrderedAt() : LocalDate.now());
+            partStockSummaryMapper.insertHistory(history);
+        }
     }
 
     /**
      * 指定したIDの部品情報を更新します。
+     * 在庫数の変更があれば、入出庫履歴として登録します。
      *
      * @param part 更新対象の部品情報
      */
     @Transactional
     public void updatePart(Part part) {
+        Part oldPart = partMapper.findById(part.getId());
+        int oldQty = oldPart.getStockQuantity() == null ? 0 : oldPart.getStockQuantity();
+        int newQty = part.getStockQuantity() == null ? 0 : part.getStockQuantity();
+        int diff = newQty - oldQty;
         partMapper.updatePart(part);
+
+        if (diff != 0) {
+            StockHistoryPart history = new StockHistoryPart();
+            history.setPartId(part.getId());
+            history.setQuantity(diff);
+            history.setActionAt(part.getLastOrderedAt() != null ? part.getLastOrderedAt() : LocalDate.now());
+            partStockSummaryMapper.insertHistory(history);
+        }
     }
 
     /**
      * 指定したIDの部品情報を削除します。
      *
-     * @param id 削除対象の部品ID
+     * @param id 部品ID
+     * @throws IllegalArgumentException 部品が存在しない場合
+     * @throws IllegalStateException    履歴が存在する場合、または在庫が残っている場合
      */
     @Transactional
     public void deletePart(Long id) {
@@ -88,12 +110,22 @@ public class PartService {
         if (part == null) {
             throw new IllegalArgumentException("部品が存在しません");
         }
+        if (partStockSummaryMapper.existsHistoryByPartId(id)) {
+            throw new IllegalStateException("履歴が存在する部品は削除できません");
+        }
         if (part.getStockQuantity() > 0) {
             throw new IllegalStateException("在庫が残っている部品は削除できません");
         }
         partMapper.deletePart(id);
     }
 
+    /**
+     * 指定された複数の部品情報を一括削除します。
+     *
+     * @param ids 部品IDリスト
+     * @throws IllegalArgumentException 部品が存在しない場合
+     * @throws IllegalStateException    履歴が存在する場合、または在庫が残っている場合
+     */
     @Transactional
     public void deleteParts(List<Long> ids) {
         for (Long id : ids) {

@@ -69,29 +69,10 @@ function updatePart() {
         method: "POST",
         body: formData
     })
-    .then(res => res.text())
-    .then(html => {
-        document.getElementById("content").innerHTML = html;
-    });
-}
-
-function deleteParts() {
-
-    if (!confirm("選択した部品を削除します。よろしいですか？")) return;
-
-    const checked = document.querySelectorAll(
-        'input[name="deleteIds"]:checked'
-    );
-
-    const formData = new FormData();
-
-    checked.forEach(c => formData.append("deleteIds", c.value));
-
-    fetch("/parts/delete", {
-        method: "POST",
-        body: formData
+    .then(res => {
+        if (!res.ok) throw new Error("更新失敗");
+        return res.text();
     })
-    .then(res => res.text())
     .then(html => {
         document.getElementById("content").innerHTML = html;
     });
