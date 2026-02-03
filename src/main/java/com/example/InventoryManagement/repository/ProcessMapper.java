@@ -5,6 +5,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+/**
+ * 全ての工程一覧、指定されたIDの工程情報を取得するMapperインタフェースです。
+ */
 @Mapper
 public interface ProcessMapper {
 

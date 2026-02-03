@@ -13,8 +13,7 @@ import java.util.List;
 
 
 /**
- * 部品情報の一覧表示・登録・更新・削除を行う
- * RESTAPI用のコントローラクラスです。
+ * 部品情報の取得・登録・更新を行うRESTAPI用のコントローラクラスです。
  */
 @Validated
 @RestController
@@ -36,14 +35,14 @@ public class PartApiController {
     }
 
     /**
-     * 部品名を条件に部品情報を検索します。
+     * 指定したIDの部品情報を取得します。
      *
-     * @param partName 検索対象の部品名
-     * @return 条件に一致する部品情報の一覧
+     * @param id 部品ID
+     * @return 指定したIDの部品情報
      */
-    @GetMapping("/api/parts/search")
-    public List<Part> searchByName(@RequestParam String partName) {
-        return partService.findByPartName(partName);
+    @GetMapping("/api/parts/{id}")
+    public Part get(@PathVariable Long id) {
+        return partService.findById(id);
     }
 
     /**
@@ -52,8 +51,8 @@ public class PartApiController {
      * @param part 登録する部品情報
      * @return 登録成功時は 201 Created
      */
-    @PostMapping("/api/parts/register")
-    public ResponseEntity<Void> registerPart(@RequestBody @Valid Part part) {
+    @PostMapping("/api/parts")
+    public ResponseEntity<Void> register(@RequestBody @Valid Part part) {
         partService.registerPart(part);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -66,7 +65,7 @@ public class PartApiController {
      * @return 更新成功時は 200 OK
      */
     @PutMapping("/api/parts/{id}")
-    public ResponseEntity<Void> updatePart(@PathVariable @NotNull Long id, @RequestBody @Valid Part part) {
+    public ResponseEntity<Void> update(@PathVariable @NotNull Long id, @RequestBody @Valid Part part) {
         part.setId(id);
         partService.updatePart(part);
         return ResponseEntity.ok().build();
@@ -76,11 +75,19 @@ public class PartApiController {
      * 指定したIDの部品情報を削除します。
      *
      * @param id 削除対象の部品ID
-     * @return 削除成功時は 204 No Content
+     * @return 現在は削除できない仕様となっているので、409 Conflictが返ってきます。
      */
     @DeleteMapping("/api/parts/{id}")
-    public ResponseEntity<Void> deletePart(@PathVariable @NotNull Long id) {
-        partService.deletePart(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> delete(@PathVariable @NotNull Long id) {
+        try {
+            partService.deletePart(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            // 履歴が残っている、在庫が残っている場合
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            // 部品が存在しない場合
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

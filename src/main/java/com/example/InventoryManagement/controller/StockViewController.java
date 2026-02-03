@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
 
 /**
- * 部品の在庫に関する集計情報を画面に返すコントローラーです。
+ * 部品の入出庫数を期間ごとに集計し、画面表示用に返すコントローラーです。
  */
 @Controller
 public class StockViewController {
@@ -21,7 +21,7 @@ public class StockViewController {
     }
 
     /**
-     * 指定された期間の部品の入出庫数を集計して画面に返します。
+     * 指定した期間の部品の入出庫数を集計して画面に返します。
      *
      * @param from  集計開始日（この日を含む）
      * @param to    集計終了日（この日を含む）
@@ -36,11 +36,7 @@ public class StockViewController {
 
         model.addAttribute(
                 "partSummaries",
-                summaryService.getPartSummaries(
-                        from.atStartOfDay(),
-                        to.plusDays(1).atStartOfDay()
-                )
-        );
-        return "fragments/part-list :: partsContent";
+                summaryService.getPartSummaries(from, to.plusDays(1)));
+        return "fragments/part-list :: summary";
     }
 }

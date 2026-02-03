@@ -21,24 +21,22 @@
         </div>
         <p>
             ※ 部品の種類を選択して検索ボタンをクリックするか、全部品一覧をクリックすると部品情報が表示されます。<br>
-            ※ 部品名をクリックすると、更新画面が表示されます。<br>
-            ※ 製品名をクリックすると、更新画面が表示されます。<br>
-            ※ 削除する際は、削除したい製品にチェックを入れて「削除」ボタンをクリックしてください。
+            ※ 部品名をクリックすると、更新画面が表示されます。数量を変更する際は、必ず日付を更新日に変更してください。<br>
+            <br>
+            ※ 期間を指定して集計ボタンをクリックすると、その間にどれだけ部品の数量が増減したかを知ることができます。
         </p></div>
     <table class="table">
         <thead>
         <tr>
-            <th>削除</th>
             <th>ID</th>
             <th>部品名</th>
             <th>型番</th>
             <th>数量</th>
-            <th>最終入荷日</th>
+            <th>最終入庫日</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="part : ${parts}">
-            <td><input type="checkbox" name="deleteIds" th:value="${part.id}"></td>
             <td th:text="${part.id}"></td>
             <td><a href="javascript:void(0);" th:onclick="|loadPart(${part.id})|">
                 <span th:text="${part.partName}"></span></a></td>
@@ -48,11 +46,6 @@
         </tr>
         </tbody>
     </table>
-    <h3 class="heading-1">部品の削除</h3>
-    <button class="button-1" onclick="deleteParts()">
-        削除
-    </button>
-    <br><br>
     <div class="edit-area" th:if="${part != null}">
         <h3 class="heading-1">部品の更新</h3>
 
@@ -74,10 +67,13 @@
         </label>
 
         <label>
-            最終入荷日：
+            更新日：
             <input type="date" id="lastOrderedAt"
                    th:value="${part != null && part.lastOrderedAt != null ? #temporals.format(part.lastOrderedAt,'yyyy-MM-dd') : ''}">
         </label>
+        <input type="hidden"
+               id="processId"
+               th:value="${part != null ? part.processId : ''}">
         <br><br>
         <button class="button-1" onclick="updatePart()">更新</button>
     </div>
@@ -95,7 +91,7 @@
         <button class="button-1" type="submit">登録</button>
     </form>
 
-    <!-- 棚卸し（期間集計） -->
+    <!-- 棚卸し入力エリア -->
     <div class="inventory-area">
         <h3 class="heading-1">棚卸し（期間指定）</h3>
 
@@ -113,32 +109,37 @@
             <button class="button-1" onclick="loadStockSummary()">集計</button>
         </form>
 
-        <!-- 結果表示エリア -->
-        <div class="summary-area">
-            <!-- fetchで結果HTMLを差し替える -->
-        </div>
+        <div class="summary-area"></div>
     </div>
 
-    <div th:fragment="summary">
-        <h3 class="heading-1">棚卸し結果</h3>
+</div>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th>部品名</th>
-                <th>入庫</th>
-                <th>出庫</th>
-                <th>差引</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="s : ${partSummaries}">
-                <td th:text="${s.partName}"></td>
-                <td th:text="${s.totalIn}"></td>
-                <td th:text="${s.totalOut}"></td>
-                <td th:text="${s.difference}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="summary">
+
+    <h3 class="heading-1">棚卸し結果</h3>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>部品名</th>
+            <th>入庫</th>
+            <th>出庫</th>
+            <th>差引</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="s : ${partSummaries}">
+            <td th:text="${s.partName}"></td>
+            <td th:text="${s.totalIn}"></td>
+            <td th:text="${s.totalOut}"></td>
+            <td th:text="${s.difference}"></td>
+        </tr>
+        </tbody>
+
+    </table>
+    <script th:if="${errorMessage}" th:inline="javascript">
+        alert([[${errorMessage}]]);
+    </script>
 </div>
