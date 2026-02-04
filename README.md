@@ -13,8 +13,14 @@
 
 ### 主な使用技術  
 <img src="https://img.shields.io/badge/-Java%2021-orange.svg?logo=java&style=plastic">　<img src="https://img.shields.io/badge/-Spring%20Boot%204.0.1-2FCEA0.svg?logo=skyliner&style=plastic">　<img src="https://img.shields.io/badge/-Thymeleaf-20B8E5.svg?logo=tencentweibo&style=plastic">　<img src="https://img.shields.io/badge/Javascript-276DC3.svg?logo=javascript&style=flat">　<img src="https://img.shields.io/badge/-MySQL-4479A1.svg?logo=mysql&style=plastic">　<img src="https://img.shields.io/badge/-My%20Batis-BA141A.svg?logo=microsoftaccess&style=plastic">　<img src="https://img.shields.io/badge/-Postman-FF6C37.svg?logo=postman&style=plastic">　<img src="https://img.shields.io/badge/-Github-181717.svg?logo=github&style=plastic">　<img src="https://img.shields.io/badge/-Intellij%20IDEA-000000.svg?logo=intellijidea&style=plastic">    
-  
-  
+- View  
+ThymeleafとJavaScriptを用いて画面表示を実装しました。  
+業務画面としての操作性を意識し、工程メニューを固定したレイアウトを採用しています。  
+- REST API  
+将来的なフロントエンド分離や外部システム連携を想定し、View用Controllerとは別にREST API専用Controllerを実装しました。  
+Postmanを用いてレスポンス検証を行っています。  
+
+
 ### 機能一覧  
 | 機能 | 詳細 |
 | --- | --- |
@@ -85,7 +91,18 @@ https://github.com/user-attachments/assets/77320e5c-8be8-414a-a247-341096ff49ef
 
 
 
-### 力を入れたところ
+### 力を入れたところ  
+
+#### ソート機能
+
+#### 履歴管理設計
+在庫数量とは別に、入出庫履歴をstock_historyテーブルとして分離しました。  
+この設計により、在庫がいつ・どのように増減したのかを後から確認できる棚卸し機能を実装できました。  
+
+#### 生成AIの活用について
+本プロジェクトでは、開発効率向上のため生成AIを活用しています。  
+ただし、AIの出力をそのまま信じるのではなく、これまで学習してきた内容と照らし合わせ、動作検証・修正を行いなが実装しています。  
+要件に沿っているか、不要な処理が含まれていないかという点は特に気をつけ、実装にあたりました。  
 
 
 ### 今後の展望
