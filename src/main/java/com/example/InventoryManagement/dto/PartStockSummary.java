@@ -8,6 +8,7 @@ import lombok.Setter;
 public class PartStockSummary {
     private Long partId;
     private String partName;
+    private String modelNumber;
     private Integer totalIn;
     private Integer totalOut;
 

@@ -5,9 +5,12 @@
     <h3 class="heading-1">部品検索</h3>
     <div class="search-area">
         <form onsubmit="searchPart(event)">
-            <select name="partId">
+            <select id="partMasterId" name="partMasterId">
                 <option value="">選択してください</option>
-                <option th:each="p : ${allParts}" th:value="${p.id}" th:text="${p.partName}"></option>
+                <option th:each="pm : ${partMasters}"
+                        th:value="${pm.id}"
+                        th:text="${pm.partName}">
+                </option>
             </select>
             <button class="button-1" type="submit">検索</button>
             <a href="javascript:void(0);" onclick="loadAllParts()" class="all-link">全部品一覧</a>
@@ -53,7 +56,13 @@
 
         <label>
             部品名：
-            <input type="text" id="partName" th:value="${part != null ? part.partName : ''}">
+            <select id="editPartMasterId" name="partMasterId">
+                <option th:each="pm : ${partMasters}"
+                        th:value="${pm.id}"
+                        th:selected="${pm.id == part.partMasterId}"
+                        th:text="${pm.partName}">
+                </option>
+            </select>
         </label>
 
         <label>
@@ -79,17 +88,24 @@
     </div>
 
     <!-- 登録 -->
-    <h3 class="heading-1">部品の登録</h3>
-    <form onsubmit="registerPart(event)">
-        <input type="hidden" name="processId"
-               th:value="${process != null && process.id != null ? process.id : ''}">
-        <input type="text" name="partName" placeholder="部品名">
-        <input type="text" name="modelNumber" placeholder="型番">
-        <input type="number" name="stockQuantity" placeholder="初期数量">
-        <input type="date" name="lastOrderedAt">
-        <br><br>
-        <button class="button-1" type="submit">登録</button>
-    </form>
+    <div th:if="${process != null}">
+        <h3 class="heading-1">部品の登録</h3>
+        <form onsubmit="registerPart(event)">
+            <input type="hidden" name="processId"
+                   th:value="${process != null && process.id != null ? process.id : ''}">
+            <select id="registerPartMasterId" name="partMasterId">
+                <option th:each="pm : ${partMasters}"
+                        th:value="${pm.id}"
+                        th:text="${pm.partName}">
+                </option>
+            </select>
+            <input type="text" name="modelNumber" placeholder="型番">
+            <input type="number" name="stockQuantity" placeholder="初期数量">
+            <input type="date" name="lastOrderedAt">
+            <br><br>
+            <button class="button-1" type="submit">登録</button>
+        </form>
+    </div>
 
     <!-- 棚卸し入力エリア -->
     <div class="inventory-area">
@@ -123,6 +139,7 @@
         <thead>
         <tr>
             <th>部品名</th>
+            <th>型番</th>
             <th>入庫</th>
             <th>出庫</th>
             <th>差引</th>
@@ -132,6 +149,7 @@
         <tbody>
         <tr th:each="s : ${partSummaries}">
             <td th:text="${s.partName}"></td>
+            <td th:text="${s.modelNumber}"></td>
             <td th:text="${s.totalIn}"></td>
             <td th:text="${s.totalOut}"></td>
             <td th:text="${s.difference}"></td>

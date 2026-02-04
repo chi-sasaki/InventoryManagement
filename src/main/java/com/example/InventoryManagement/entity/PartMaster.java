@@ -5,8 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Part extends StockRecord {
+public class PartMaster {
     private Long id;
-    private Long partMasterId;
     private String partName;
 }

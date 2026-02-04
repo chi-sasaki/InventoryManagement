@@ -75,9 +75,9 @@
             <td th:text="${p.companyName}"></td>
 
             <td>
-                <a th:onclick="|loadProduct(${p.id})|"
-                   th:text="${p.productName}">
-                </a>
+                <a href="#"
+                   th:onclick="|loadProduct(${p.id}, event)|"
+                   th:text="${p.productName}"></a>
             </td>
             <td th:text="${p.modelNumber}"></td>
             <td th:text="${p.stockQuantity}"></td>
@@ -94,8 +94,7 @@
         </button>
         <br><br>
     </div>
-    <div class="edit-area"
-         th:if="${product != null}">
+    <div class="edit-area" th:if="${product != null}" style="display:none;">
         <h3 class="heading-1">製品（在庫）の更新</h3>
 
         <select id="companyId">
@@ -105,9 +104,11 @@
                     th:selected="${company.id == product.companyId}">
             </option>
         </select>
+
         <label>
             製品名：
-            <input type="text" name="productName" id="productName" th:value="${product.productName}">
+            <input type="text" name="productName" id="productName"
+                   th:value="${product.productName}">
         </label>
 
         <label>

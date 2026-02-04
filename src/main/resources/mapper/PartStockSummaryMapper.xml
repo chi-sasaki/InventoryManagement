@@ -8,7 +8,8 @@
 
         SELECT
         p.id AS partId,
-        p.part_name AS partName,
+        pm.part_name AS partName,
+        p.model_number AS modelNumber,
 
         COALESCE(SUM(
         CASE
@@ -25,13 +26,17 @@
         ), 0) AS totalOut
 
         FROM part p
+        LEFT JOIN part_master pm
+        ON p.part_master_id = pm.id
+
         LEFT JOIN stock_history_part sh
         ON sh.part_id = p.id
         AND sh.action_at >= #{from}
         AND sh.action_at &lt; #{to}
 
-        GROUP BY p.id, p.part_name
+        GROUP BY p.id, pm.part_name, p.model_number
         ORDER BY p.id
+
     </select>
 
     <!-- 指定された部品の入出庫履歴を登録します -->

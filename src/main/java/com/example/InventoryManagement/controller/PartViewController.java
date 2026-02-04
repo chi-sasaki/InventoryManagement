@@ -2,6 +2,7 @@ package com.example.InventoryManagement.controller;
 
 import com.example.InventoryManagement.entity.ManufacturingProcess;
 import com.example.InventoryManagement.entity.Part;
+import com.example.InventoryManagement.service.PartMasterService;
 import com.example.InventoryManagement.service.PartService;
 import com.example.InventoryManagement.service.ProcessService;
 import jakarta.validation.Valid;
@@ -23,14 +24,17 @@ import java.util.List;
 public class PartViewController {
     private final PartService partService;
     private final ProcessService processService;
+    private final PartMasterService partMasterService;
 
-    public PartViewController(PartService partService, ProcessService processService) {
+    public PartViewController(PartService partService, ProcessService processService, PartMasterService partMasterService) {
         this.partService = partService;
         this.processService = processService;
+        this.partMasterService = partMasterService;
     }
 
     /**
-     * 初期表示用画面。全ての部品情報を取得し、一覧画面を表示します。
+     * 初期表示画面を表示します。
+     * 全ての部品情報を取得し、一覧表示用データとしてModelに設定します。
      *
      * @param model 画面表示用
      * @return 部品情報の一覧画面
@@ -39,30 +43,27 @@ public class PartViewController {
     public String list(Model model) {
         model.addAttribute("parts", Collections.emptyList());
         model.addAttribute("allParts", partService.findAll());
-        model.addAttribute("process", null);
+        model.addAttribute("partMasters", partMasterService.findAll());
         return "fragments/part-list :: partsContent";
     }
 
     /**
-     * 指定した部品IDに基づいて部品情報を検索し、一覧画面を表示します。
+     * 部品マスタIDで部品情報を検索し、一覧表示用フラグメントを返します。
      *
-     * @param partId 検索対象の部品ID
-     * @param model  画面表示用
+     * @param partMasterId 部品マスタID
+     * @param model        画面表示用
      * @return 部品一覧表示用フラグメント名
      */
     @GetMapping("/parts/search")
-    public String searchById(
-            @RequestParam(required = false) Long partId, Model model) {
-        List<Part> parts;
-        if (partId == null) {
-            parts = Collections.emptyList();
-        } else {
-            Part p = partService.findById(partId);
-            parts = p != null ? List.of(p) : List.of();
-        }
+    public String searchByMasterId(
+            @RequestParam(required = false) Long partMasterId,
+            Model model) {
+
+        List<Part> parts = partMasterId == null
+                ? Collections.emptyList()
+                : partService.findByPartMasterId(partMasterId);
         model.addAttribute("parts", parts);
-        model.addAttribute("allParts", partService.findAll());
-        model.addAttribute("process", null);
+        model.addAttribute("partMasters", partMasterService.findAll());
         return "fragments/part-list :: partsContent";
     }
 
@@ -77,7 +78,7 @@ public class PartViewController {
         List<Part> parts = partService.findAll();
         model.addAttribute("parts", parts);
         model.addAttribute("allParts", parts);
-        model.addAttribute("process", null);
+        model.addAttribute("partMasters", partMasterService.findAll());
         return "fragments/part-list :: partsContent";
     }
 
@@ -93,6 +94,7 @@ public class PartViewController {
         partService.registerPart(part);
         model.addAttribute("parts", partService.findByProcessId(part.getProcessId()));
         model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("partMasters", partMasterService.findAll());
         model.addAttribute("process", processService.findById(part.getProcessId()));
         model.addAttribute("part", null);
         return "fragments/part-list :: partsContent";
@@ -110,6 +112,7 @@ public class PartViewController {
         partService.updatePart(part);
         model.addAttribute("parts", partService.findByProcessId(part.getProcessId()));
         model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("partMasters", partMasterService.findAll());
         model.addAttribute("process", processService.findById(part.getProcessId()));
         model.addAttribute("part", partService.findById(part.getId()));
         return "fragments/part-list :: partsContent";
@@ -131,6 +134,7 @@ public class PartViewController {
             model.addAttribute("errorMessage", e.getMessage());
         }
         List<Part> parts = partService.findAll();
+        model.addAttribute("partMasters", partMasterService.findAll());
         model.addAttribute("parts", parts);
         model.addAttribute("allParts", parts);
         model.addAttribute("process", null);
@@ -150,6 +154,7 @@ public class PartViewController {
         model.addAttribute("part", part);
         model.addAttribute("parts", Collections.emptyList());
         model.addAttribute("allParts", partService.findAll());
+        model.addAttribute("partMasters", partMasterService.findAll());
         if (part != null && part.getProcessId() != null) {
             model.addAttribute("process", processService.findById(part.getProcessId()));
         }
@@ -157,7 +162,7 @@ public class PartViewController {
     }
 
     /**
-     * 指定された工程IDに紐づく部品一覧を取得し、部品一覧表示用のフラグメントを返します。
+     * 指定された工程IDの工程情報を取得し、部品一覧表示用のフラグメントを返します。
      *
      * @param processId 工程ID
      * @param model     画面表示用
@@ -165,9 +170,10 @@ public class PartViewController {
      */
     @GetMapping("/parts/process/{processId}")
     public String findByProcess(@PathVariable Long processId, Model model) {
-        model.addAttribute("parts", partService.findByProcessId(processId));
+        model.addAttribute("parts", Collections.emptyList());
         ManufacturingProcess process = processService.findById(processId);
         model.addAttribute("process", process);
+        model.addAttribute("partMasters", partMasterService.findAll());
         return "fragments/part-list :: partsContent";
     }
 }

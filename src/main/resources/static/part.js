@@ -60,7 +60,8 @@ function updatePart() {
     formData.append("id", document.getElementById("partId").value);
     formData.append("processId",
         document.getElementById("processId").value);
-    formData.append("partName", document.getElementById("partName").value);
+    formData.append("partMasterId",
+            document.getElementById("editPartMasterId").value);
     formData.append("modelNumber", document.getElementById("modelNumber").value);
     formData.append("stockQuantity", document.getElementById("stockQuantity").value);
     formData.append("lastOrderedAt", document.getElementById("lastOrderedAt").value);

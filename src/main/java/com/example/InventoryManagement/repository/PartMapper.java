@@ -28,6 +28,14 @@ public interface PartMapper {
     List<Part> findAll();
 
     /**
+     * 指定された部品マスタIDに紐づく部品情報の一覧を取得します。
+     *
+     * @param partMasterId 部品マスタID
+     * @return 指定された部品マスタに紐づく部品情報の一覧
+     */
+    List<Part> findByPartMasterId(Long partMasterId);
+
+    /**
      * 部品情報を新規登録します。
      *
      * @param part 登録する部品情報
