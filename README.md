@@ -48,10 +48,16 @@
 
 
 #### 会社情報の検索・登録・更新・削除（REST API）  
-https://github.com/user-attachments/assets/17c3992c-79fb-4e62-baf9-a0a1f480a2ae
+https://github.com/user-attachments/assets/b3c6b6b7-d72b-4fb7-8c2d-6b5b09876f80  
 
+#### 部品情報の検索・登録・更新・削除（REST API）  
+https://github.com/user-attachments/assets/3fb6e6c5-bdbc-495a-ae49-d201f8929ccf  
 
+#### 入出庫履歴の表示（REST API）  
+https://github.com/user-attachments/assets/0314c745-c5e6-4e2d-8f4e-03585310e7ce  
 
+#### 製品情報の検索・登録・更新・削除（REST API）  
+https://github.com/user-attachments/assets/77320e5c-8be8-414a-a247-341096ff49ef
 
 
 ### E-R図
