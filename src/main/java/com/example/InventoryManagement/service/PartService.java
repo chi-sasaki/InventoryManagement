@@ -48,10 +48,20 @@ public class PartService {
     /**
      * 全ての部品情報を取得します。
      *
-     * @return 取得した部品情報の一覧
+     * @return 部品情報の一覧
      */
     public List<Part> findAll() {
         return partMapper.findAll();
+    }
+
+    /**
+     * 指定された部品マスタIDに紐づく部品情報の一覧を取得します。
+     *
+     * @param partMasterId 部品マスタID
+     * @return 部品情報の一覧
+     */
+    public List<Part> findByPartMasterId(Long partMasterId) {
+        return partMapper.findByPartMasterId(partMasterId);
     }
 
     /**

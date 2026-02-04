@@ -5,33 +5,71 @@
     <!-- 部品の一覧検索 -->
     <select id="findAll" resultType="com.example.InventoryManagement.entity.Part">
         SELECT
-        id, part_name, process_id, model_number, stock_quantity, last_ordered_at
-        FROM
-        part
-        ORDER BY
-        id
+        p.id,
+        pm.part_name AS partName,
+        p.part_master_id AS partMasterId,
+        p.process_id,
+        p.model_number AS modelNumber,
+        p.stock_quantity,
+        p.last_ordered_at
+        FROM part p
+        LEFT JOIN part_master pm
+        ON p.part_master_id = pm.id
+        ORDER BY p.id
     </select>
 
     <!-- １件の部品idを取得する-->
-    <select id="findById"
-            resultType="com.example.InventoryManagement.entity.Part">
+    <select id="findById" resultType="com.example.InventoryManagement.entity.Part">
         SELECT
-        id, part_name, process_id, model_number, stock_quantity, last_ordered_at
-        FROM part
-        WHERE id = #{id}
+        p.id,
+        pm.part_name AS partName,
+        p.part_master_id AS partMasterId,
+        p.process_id,
+        p.model_number,
+        p.stock_quantity,
+        p.last_ordered_at
+        FROM part p
+        LEFT JOIN part_master pm
+        ON p.part_master_id = pm.id
+        WHERE p.id = #{id}
     </select>
 
     <!-- 指定された工程に紐づく部品情報の一覧を返す -->
-    <select id="findByProcessId" parameterType="long" resultType="com.example.InventoryManagement.entity.Part">
+    <select id="findByProcessId"
+            resultType="com.example.InventoryManagement.entity.Part">
         SELECT
-        id,
-        part_name,
-        process_id,
-        model_number,
-        stock_quantity,
-        last_ordered_at
-        FROM part
-        WHERE process_id = #{processId}
+        p.id,
+        pm.part_name AS partName,
+        p.part_master_id AS partMasterId,
+        p.process_id,
+        p.model_number,
+        p.stock_quantity,
+        p.last_ordered_at
+        FROM part p
+        LEFT JOIN part_master pm
+        ON p.part_master_id = pm.id
+        WHERE p.process_id = #{processId}
+    </select>
+
+    <!-- 指定された部品マスタIDに紐づく部品情報の一覧を取得 -->
+    <select id="findByPartMasterId"
+            parameterType="long"
+            resultType="com.example.InventoryManagement.entity.Part">
+
+        SELECT
+        p.id,
+        pm.part_name AS partName,
+        p.part_master_id AS partMasterId,
+        p.process_id,
+        p.model_number,
+        p.stock_quantity,
+        p.last_ordered_at
+        FROM part p
+        LEFT JOIN part_master pm
+        ON p.part_master_id = pm.id
+        WHERE p.part_master_id = #{partMasterId}
+        ORDER BY p.id
+
     </select>
 
     <!-- 部品登録 -->
@@ -41,19 +79,21 @@
             keyProperty="id">
 
         INSERT INTO part
-        (part_name, process_id, model_number, stock_quantity, last_ordered_at)
+        (part_master_id, process_id, model_number, stock_quantity, last_ordered_at)
         VALUES
-        (#{partName}, #{processId}, #{modelNumber}, #{stockQuantity}, #{lastOrderedAt})
+        (#{partMasterId}, #{processId}, #{modelNumber}, #{stockQuantity}, #{lastOrderedAt})
     </insert>
 
     <!-- 部品情報更新 -->
     <update id="updatePart" parameterType="com.example.InventoryManagement.entity.Part">
         UPDATE part
         SET
-        part_name = #{partName}, process_id = #{processId}, model_number = #{modelNumber},
-        stock_quantity = #{stockQuantity}, last_ordered_at = #{lastOrderedAt}
-        WHERE
-        id = #{id}
+        part_master_id = #{partMasterId},
+        process_id = #{processId},
+        model_number = #{modelNumber},
+        stock_quantity = #{stockQuantity},
+        last_ordered_at = #{lastOrderedAt}
+        WHERE id = #{id}
     </update>
 
     <!-- 部品情報削除 -->

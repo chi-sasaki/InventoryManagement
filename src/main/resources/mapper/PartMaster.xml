@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.InventoryManagement.repository.PartMasterMapper">
+
+    <!-- 部品マスタ情報を全件取得 -->
+    <select id="findAll"
+            resultType="com.example.InventoryManagement.entity.PartMaster">
+        SELECT
+        id,
+        part_name AS partName
+        FROM part_master
+        ORDER BY id
+    </select>
+
+</mapper>

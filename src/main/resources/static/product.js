@@ -10,11 +10,17 @@ function searchProduct(event) {
         });
 }
 
-function loadProduct(productId) {
+function loadProduct(productId, event) {
+    event.preventDefault();
+
     fetch(`/product/${productId}/edit`)
-        .then(res => res.text())
+        .then(res => res.text())  // HTMLフラグメントを取得
         .then(html => {
             document.getElementById("content").innerHTML = html;
+
+            // フラグメント内の更新ボックスを表示
+            const editArea = document.querySelector(".edit-area");
+            if (editArea) editArea.style.display = "block";
         });
 }
 
