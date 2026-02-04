@@ -38,14 +38,11 @@
 半年に一度実施される棚卸し業務を想定し、指定した期間内の入庫数・出庫数を集計、表示する機能です。  
 
 ### 使用イメージ  
-#### 部品の検索・登録・更新・棚卸し  
+#### 部品の検索・登録・更新・棚卸し（View）  
+https://github.com/user-attachments/assets/6ed66b0b-d2eb-4bbb-a6e2-9a7243e3cd59
 
-
-
-#### 製品の検索・登録・更新・削除  
-
-
-
+#### 製品の検索・登録・更新・削除（View）  
+https://github.com/user-attachments/assets/9a87e7c8-de12-4fbf-93e6-557f4aea3588
 
 #### 会社情報の検索・登録・更新・削除（REST API）  
 https://github.com/user-attachments/assets/b3c6b6b7-d72b-4fb7-8c2d-6b5b09876f80  
