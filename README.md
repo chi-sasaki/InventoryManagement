@@ -48,7 +48,7 @@ Postmanを用いてレスポンス検証を行っています。
 https://github.com/user-attachments/assets/6ed66b0b-d2eb-4bbb-a6e2-9a7243e3cd59
 
 #### 製品の検索・登録・更新・削除（View）  
-https://github.com/user-attachments/assets/9a87e7c8-de12-4fbf-93e6-557f4aea3588
+https://github.com/user-attachments/assets/f26dbd9b-9ddd-43fc-b0cd-bafaf417f2b0
 
 #### 会社情報の検索・登録・更新・削除（REST API）  
 https://github.com/user-attachments/assets/8ce1c268-15d0-4fa9-804f-c6853599b63c
