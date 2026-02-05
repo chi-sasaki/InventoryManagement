@@ -60,8 +60,7 @@ https://github.com/user-attachments/assets/3fb6e6c5-bdbc-495a-ae49-d201f8929ccf
 https://github.com/user-attachments/assets/0314c745-c5e6-4e2d-8f4e-03585310e7ce  
 
 #### 製品情報の検索・登録・更新・削除（REST API）  
-https://github.com/user-attachments/assets/77320e5c-8be8-414a-a247-341096ff49ef
-
+https://github.com/user-attachments/assets/711d9928-9ebd-46a1-9ea3-f501f4dcdafa
 
 ### E-R図
 <img width="2100" height="1889" alt="ER" src="https://github.com/user-attachments/assets/39aeb989-b7e7-4bbe-8fda-b96cd780278b" />
