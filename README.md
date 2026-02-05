@@ -54,7 +54,7 @@ https://github.com/user-attachments/assets/f26dbd9b-9ddd-43fc-b0cd-bafaf417f2b0
 https://github.com/user-attachments/assets/8ce1c268-15d0-4fa9-804f-c6853599b63c
 
 #### 部品情報の検索・登録・更新・削除（REST API）  
-https://github.com/user-attachments/assets/3fb6e6c5-bdbc-495a-ae49-d201f8929ccf  
+https://github.com/user-attachments/assets/ef50f546-36cd-4079-af0f-c2070cacd005
 
 #### 入出庫履歴の表示（REST API）  
 https://github.com/user-attachments/assets/0314c745-c5e6-4e2d-8f4e-03585310e7ce  
