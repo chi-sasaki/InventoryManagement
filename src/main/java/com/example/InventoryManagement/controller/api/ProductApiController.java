@@ -24,7 +24,7 @@ public class ProductApiController {
      *
      * @return 製品情報の一覧
      */
-    @GetMapping("api/product")
+    @GetMapping("/api/product")
     public List<Product> list() {
         return productService.findAll();
     }
