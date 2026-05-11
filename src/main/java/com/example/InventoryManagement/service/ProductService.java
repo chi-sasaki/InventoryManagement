@@ -1,6 +1,7 @@
 package com.example.InventoryManagement.service;
 
 import com.example.InventoryManagement.entity.Product;
+import com.example.InventoryManagement.exception.ResourceNotFoundException;
 import com.example.InventoryManagement.repository.ProductMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,12 @@ public class ProductService {
      * @return 指定したIDの製品情報
      */
     public Product findById(Long id) {
-        return productMapper.findById(id);
+        Product product = productMapper.findById(id);
+        if (product == null) {
+            throw new ResourceNotFoundException(
+                    "製品が存在しません");
+        }
+        return product;
     }
 
     /**
@@ -64,6 +70,7 @@ public class ProductService {
      */
     @Transactional
     public void updateProduct(Product product) {
+        findById(product.getId());
         productMapper.updateProduct(product);
     }
 
@@ -74,6 +81,7 @@ public class ProductService {
      */
     @Transactional
     public void deleteProduct(Long id) {
+        findById(id);
         productMapper.deleteProduct(id);
     }
 

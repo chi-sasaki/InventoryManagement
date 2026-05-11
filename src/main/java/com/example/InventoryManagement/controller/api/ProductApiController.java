@@ -2,6 +2,7 @@ package com.example.InventoryManagement.controller.api;
 
 import com.example.InventoryManagement.entity.Product;
 import com.example.InventoryManagement.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class ProductApiController {
      * @return 成功時は 201 Created
      */
     @PostMapping("/api/product")
-    public ResponseEntity<Void> register(@RequestBody Product product) {
+    public ResponseEntity<Void> register(@RequestBody @Valid Product product) {
         productService.registerProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -60,7 +61,7 @@ public class ProductApiController {
      * @return 成功時は 200 OK
      */
     @PutMapping("/api/product/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody @Valid Product product) {
         product.setId(id);
         productService.updateProduct(product);
         return ResponseEntity.ok().build();

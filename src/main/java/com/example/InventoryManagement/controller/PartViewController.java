@@ -8,6 +8,7 @@ import com.example.InventoryManagement.service.ProcessService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -90,7 +91,19 @@ public class PartViewController {
      * @return 部品一覧表示用フラグメント名
      */
     @PostMapping("/parts/register")
-    public String registerPart(@Valid Part part, Model model) {
+    public String registerPart(@Valid @ModelAttribute Part part, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("parts", partService.findByProcessId(part.getProcessId()));
+            model.addAttribute("allParts", partService.findAll());
+            model.addAttribute("partMasters", partMasterService.findAll());
+            if (part.getProcessId() != null) {
+                model.addAttribute(
+                        "process",
+                        processService.findById(part.getProcessId()));
+            }
+            return "fragments/part-list :: partsContent";
+        }
+
         partService.registerPart(part);
         model.addAttribute("parts", partService.findByProcessId(part.getProcessId()));
         model.addAttribute("allParts", partService.findAll());
@@ -108,7 +121,19 @@ public class PartViewController {
      * @return 部品一覧表示用フラグメント名
      */
     @PostMapping("/parts/update")
-    public String updatePart(@ModelAttribute Part part, Model model) {
+    public String updatePart(@Valid @ModelAttribute Part part, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("parts", partService.findByProcessId(part.getProcessId()));
+            model.addAttribute("allParts", partService.findAll());
+            model.addAttribute("partMasters", partMasterService.findAll());
+            if (part.getProcessId() != null) {
+                model.addAttribute(
+                        "process",
+                        processService.findById(part.getProcessId()));
+            }
+            return "fragments/part-list :: partsContent";
+        }
+
         partService.updatePart(part);
         model.addAttribute("parts", partService.findByProcessId(part.getProcessId()));
         model.addAttribute("allParts", partService.findAll());
@@ -128,11 +153,7 @@ public class PartViewController {
      */
     @PostMapping("/parts/delete")
     public String deleteParts(@RequestParam List<Long> deleteIds, Model model) {
-        try {
-            partService.deleteParts(deleteIds);
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-        }
+        partService.deleteParts(deleteIds);
         List<Part> parts = partService.findAll();
         model.addAttribute("partMasters", partMasterService.findAll());
         model.addAttribute("parts", parts);

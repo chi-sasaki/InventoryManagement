@@ -2,6 +2,8 @@ package com.example.InventoryManagement.service;
 
 import com.example.InventoryManagement.entity.Part;
 import com.example.InventoryManagement.entity.StockHistoryPart;
+import com.example.InventoryManagement.exception.CannotDeleteException;
+import com.example.InventoryManagement.exception.ResourceNotFoundException;
 import com.example.InventoryManagement.repository.PartMapper;
 import com.example.InventoryManagement.repository.PartStockSummaryMapper;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,12 @@ public class PartService {
      * @return 指定したIDの部品情報
      */
     public Part findById(Long id) {
-        return partMapper.findById(id);
+        Part part = partMapper.findById(id);
+        if (part == null) {
+            throw new ResourceNotFoundException(
+                    "部品が存在しません");
+        }
+        return part;
     }
 
     /**
@@ -92,7 +99,7 @@ public class PartService {
      */
     @Transactional
     public void updatePart(Part part) {
-        Part oldPart = partMapper.findById(part.getId());
+        Part oldPart = findById(part.getId());
         int oldQty = oldPart.getStockQuantity() == null ? 0 : oldPart.getStockQuantity();
         int newQty = part.getStockQuantity() == null ? 0 : part.getStockQuantity();
         int diff = newQty - oldQty;
@@ -111,20 +118,20 @@ public class PartService {
      * 指定したIDの部品情報を削除します。
      *
      * @param id 部品ID
-     * @throws IllegalArgumentException 部品が存在しない場合
-     * @throws IllegalStateException    履歴が存在する場合、または在庫が残っている場合
+     * @throws ResourceNotFoundException 部品が存在しない場合
+     * @throws CannotDeleteException     履歴が存在する場合、または在庫が残っている場合
      */
     @Transactional
     public void deletePart(Long id) {
-        Part part = partMapper.findById(id);
+        Part part = findById(id);
         if (part == null) {
-            throw new IllegalArgumentException("部品が存在しません");
+            throw new ResourceNotFoundException("部品が存在しません");
         }
         if (partStockSummaryMapper.existsHistoryByPartId(id)) {
-            throw new IllegalStateException("履歴が存在する部品は削除できません");
+            throw new CannotDeleteException("履歴が存在する部品は削除できません");
         }
         if (part.getStockQuantity() > 0) {
-            throw new IllegalStateException("在庫が残っている部品は削除できません");
+            throw new CannotDeleteException("在庫が残っている部品は削除できません");
         }
         partMapper.deletePart(id);
     }
@@ -133,8 +140,8 @@ public class PartService {
      * 指定された複数の部品情報を一括削除します。
      *
      * @param ids 部品IDリスト
-     * @throws IllegalArgumentException 部品が存在しない場合
-     * @throws IllegalStateException    履歴が存在する場合、または在庫が残っている場合
+     * @throws ResourceNotFoundException 部品が存在しない場合
+     * @throws CannotDeleteException     履歴が存在する場合、または在庫が残っている場合
      */
     @Transactional
     public void deleteParts(List<Long> ids) {

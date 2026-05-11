@@ -1,6 +1,7 @@
 package com.example.InventoryManagement.service;
 
 import com.example.InventoryManagement.entity.ManufacturingProcess;
+import com.example.InventoryManagement.exception.ResourceNotFoundException;
 import com.example.InventoryManagement.repository.ProcessMapper;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,11 @@ public class ProcessService {
      * @return 該当の工程
      */
     public ManufacturingProcess findById(Long id) {
-        return mapper.findById(id);
+        ManufacturingProcess process = mapper.findById(id);
+        if (process == null) {
+            throw new ResourceNotFoundException(
+                    "工程が存在しません");
+        }
+        return process;
     }
 }
