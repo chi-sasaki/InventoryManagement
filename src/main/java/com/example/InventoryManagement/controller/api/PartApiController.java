@@ -78,16 +78,8 @@ public class PartApiController {
      * @return 現在は削除できない仕様となっているので、409 Conflictが返ってきます。
      */
     @DeleteMapping("/api/parts/{id}")
-    public ResponseEntity<String> delete(@PathVariable @NotNull Long id) {
-        try {
-            partService.deletePart(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalStateException e) {
-            // 履歴が残っている、在庫が残っている場合
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            // 部品が存在しない場合
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        partService.deletePart(id);
+        return ResponseEntity.noContent().build();
     }
 }

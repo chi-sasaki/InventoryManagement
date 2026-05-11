@@ -5,8 +5,10 @@ import com.example.InventoryManagement.entity.Product;
 import com.example.InventoryManagement.service.CompanyService;
 import com.example.InventoryManagement.service.ProcessService;
 import com.example.InventoryManagement.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,7 +63,12 @@ public class ProductViewController {
      * @return 製品一覧表示用フラグメント名
      */
     @PostMapping("/register/product")
-    public String registerProduct(@ModelAttribute Product product, Model model) {
+    public String registerProduct(@Valid @ModelAttribute Product product, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("products", productService.findAll());
+            model.addAttribute("companies", companyService.findAll());
+            return "fragments/product-list :: productsContent";
+        }
         productService.registerProduct(product);
         model.addAttribute("products", productService.findAll());
         model.addAttribute("companies", companyService.findAll());
@@ -76,7 +83,14 @@ public class ProductViewController {
      * @return 製品一覧表示用フラグメント名
      */
     @PostMapping("/product/update")
-    public String updateProduct(@ModelAttribute Product product, Model model) {
+    public String updateProduct(@Valid @ModelAttribute Product product, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("products", productService.findAll());
+            model.addAttribute("companies", companyService.findAll());
+            model.addAttribute("product", productService.findById(product.getId()));
+            return "fragments/product-list :: productsContent";
+        }
+
         productService.updateProduct(product);
         model.addAttribute("products", productService.findAll());
         model.addAttribute("companies", companyService.findAll());

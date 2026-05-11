@@ -2,8 +2,10 @@ package com.example.InventoryManagement.controller;
 
 import com.example.InventoryManagement.entity.Company;
 import com.example.InventoryManagement.service.CompanyService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +55,10 @@ public class CompanyViewController {
      * @return 会社情報一覧画面のURL
      */
     @PostMapping("/company/register")
-    public String register(@ModelAttribute Company company) {
+    public String register(@Valid @ModelAttribute Company company, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "company/list";
+        }
         companyService.registerCompany(company);
         return "redirect:/company";
     }
@@ -78,7 +83,10 @@ public class CompanyViewController {
      * @return 会社情報一覧画面のURL
      */
     @PostMapping("/company/update")
-    public String update(@ModelAttribute Company company) {
+    public String update(@Valid @ModelAttribute Company company, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "company/list";
+        }
         companyService.updateCompany(company);
         return "redirect:/company";
     }

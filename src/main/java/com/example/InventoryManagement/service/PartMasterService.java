@@ -1,6 +1,7 @@
 package com.example.InventoryManagement.service;
 
 import com.example.InventoryManagement.entity.PartMaster;
+import com.example.InventoryManagement.exception.ResourceNotFoundException;
 import com.example.InventoryManagement.repository.PartMasterMapper;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,11 @@ public class PartMasterService {
      * @return 部品マスタ情報
      */
     public PartMaster findById(Long id) {
-        return mapper.findById(id);
+        PartMaster partMaster = mapper.findById(id);
+        if (partMaster == null) {
+            throw new ResourceNotFoundException(
+                    "部品マスタが存在しません");
+        }
+        return partMaster;
     }
 }

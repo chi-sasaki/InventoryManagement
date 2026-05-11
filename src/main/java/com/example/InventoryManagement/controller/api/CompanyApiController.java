@@ -2,6 +2,7 @@ package com.example.InventoryManagement.controller.api;
 
 import com.example.InventoryManagement.entity.Company;
 import com.example.InventoryManagement.service.CompanyService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class CompanyApiController {
      * @return HTTP 201 Created
      */
     @PostMapping("/api/companies")
-    public ResponseEntity<Void> register(@RequestBody Company company) {
+    public ResponseEntity<Void> register(@RequestBody @Valid Company company) {
         companyService.registerCompany(company);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -60,7 +61,7 @@ public class CompanyApiController {
      * @return HTTP 200 OK
      */
     @PutMapping("/api/companies/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody Company company) {
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody @Valid Company company) {
         company.setId(id);
         companyService.updateCompany(company);
         return ResponseEntity.ok().build();

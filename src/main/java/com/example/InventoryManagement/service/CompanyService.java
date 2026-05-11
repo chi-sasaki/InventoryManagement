@@ -1,6 +1,7 @@
 package com.example.InventoryManagement.service;
 
 import com.example.InventoryManagement.entity.Company;
+import com.example.InventoryManagement.exception.ResourceNotFoundException;
 import com.example.InventoryManagement.repository.CompanyMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,12 @@ public class CompanyService {
      * @return 該当する会社情報
      */
     public Company findById(Long id) {
-        return companyMapper.findById(id);
+        Company company = companyMapper.findById(id);
+        if (company == null) {
+            throw new ResourceNotFoundException(
+                    "会社情報が存在しません");
+        }
+        return company;
     }
 
     /**
@@ -64,6 +70,7 @@ public class CompanyService {
      */
     @Transactional
     public void updateCompany(Company company) {
+        findById(company.getId());
         companyMapper.updateCompany(company);
     }
 
@@ -74,6 +81,7 @@ public class CompanyService {
      */
     @Transactional
     public void deleteCompany(Long id) {
+        findById(id);
         companyMapper.deleteCompany(id);
     }
 }
