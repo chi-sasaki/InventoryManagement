@@ -63,4 +63,6 @@ public interface PartMapper {
      * @return 工程IDに紐づく部品一覧
      */
     List<Part> findByProcessId(@Param("processId") Long processId);
+
+    void updateCompany(Part newPart);
 }
