@@ -12,4 +12,16 @@
         ORDER BY id
     </select>
 
+    <!-- 指定IDの部品マスタを取得 -->
+    <select id="findById"
+            resultType="com.example.InventoryManagement.entity.PartMaster">
+
+        SELECT
+        id,
+        part_name AS partName
+        FROM part_master
+        WHERE id = #{id}
+
+    </select>
+
 </mapper>
