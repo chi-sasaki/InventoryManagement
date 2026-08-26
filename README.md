@@ -14,7 +14,7 @@
 ### 主な使用技術  
 <img src="https://img.shields.io/badge/-Java%2021-orange.svg?logo=java&style=plastic">　<img src="https://img.shields.io/badge/-Spring%20Boot%204.0.1-2FCEA0.svg?logo=skyliner&style=plastic">　<img src="https://img.shields.io/badge/-Thymeleaf-20B8E5.svg?logo=tencentweibo&style=plastic">　<img src="https://img.shields.io/badge/Javascript-276DC3.svg?logo=javascript&style=flat">　<img src="https://img.shields.io/badge/-MySQL-4479A1.svg?logo=mysql&style=plastic">　<img src="https://img.shields.io/badge/-My%20Batis-BA141A.svg?logo=microsoftaccess&style=plastic">　<img src="https://img.shields.io/badge/-Postman-FF6C37.svg?logo=postman&style=plastic">　<img src="https://img.shields.io/badge/-Github-181717.svg?logo=github&style=plastic">　<img src="https://img.shields.io/badge/-Intellij%20IDEA-000000.svg?logo=intellijidea&style=plastic">    
 - View  
-ThymeleafとJavaScriptを用いて画面表示を実装しました。  
+ThymeleafとJavaScript（ChatGPT）を用いて画面表示を実装しました。  
 業務画面としての操作性を意識し、工程メニューを固定したレイアウトを採用しています。  
 - REST API  
 将来的なフロントエンド分離や外部システム連携を想定し、View用Controllerとは別にREST API専用Controllerを実装しました。  
@@ -106,8 +106,8 @@ https://github.com/user-attachments/assets/c78b2880-7a26-42ec-bd75-9a15c01df29b
 
 #### 生成AIの活用について
 本プロジェクトでは、開発効率向上のため生成AIを活用しています。  
-ただし、AIの出力をそのまま信じるのではなく、これまで学習してきた内容と照らし合わせ、動作検証・修正を行いなが実装しています。  
-要件に沿っているか、不要な処理が含まれていないかという点は特に気をつけ、実装にあたりました。  
+特にThymeleafとJavaScript、一部SQL関連でChatGPTを使用しております。
+
   
   
   
